@@ -49,23 +49,7 @@
 <script src="dist/Person.js"></script>
 <script src="dist/game.js"></script>
 <script>
-window.onload=function(){
-	//游戏尺寸调整
-	$(window).resize(function() {
-		//调整尺寸
-		game.box.init();
-	  	game.ctx.init(); 	
-	});
-	let player1 = new Player('赵日天','男','23');
-	player1._sayName();
-	player1._sayAge();
 
-	let player2 = new Player('李杀神','男','11');
-	player2._sayName();
-	player2._sayAge();
-	player2._move().left();
-
-}
 
 </script>
 </html>

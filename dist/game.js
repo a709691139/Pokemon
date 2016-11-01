@@ -1,6 +1,19 @@
-"use strict";
+'use strict';
 
-/*战斗界面 start*/
+window.onload = function () {
+	//游戏尺寸调整
+	$(window).resize(function () {
+		//调整尺寸
+		game.box.init();
+		game.ctx.init();
+	});
+	var player = new Player('赵日天', '男', '23');
+	player._sayName();
+	player._sayAge();
+	player._move().left();
+	player._init();
+};
+
 var game = {
 	state: {
 		ongoing: false,
@@ -98,4 +111,3 @@ var game = {
 		}
 	}
 };
-/*战斗界面 end*/

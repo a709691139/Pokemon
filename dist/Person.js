@@ -23,6 +23,7 @@ var Person = function () {
       height: 0
     };
     this.images = { //人物图片 ,以图片左上角为初始点，先考虑用（整图，需计算裁剪图）还是多图(直接切换图片src)
+      url: '',
       walk: [], //走路 存src或位置
       run: [], //奔跑
       cycle: [], //单车
@@ -36,8 +37,9 @@ var Person = function () {
     }
   }, {
     key: '_draw',
-    value: function _draw() {//绘制画面
-
+    value: function _draw() {
+      //绘制画面
+      game.ctx.ctx1.drawImage(this.images.current, this.position.x, this.position.y, 403, 78, 0, 0, this.aspect.width, this.aspect.height);
     }
   }, {
     key: '_move',
@@ -83,12 +85,42 @@ var Player = function (_Person) {
     var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, name, sex));
 
     _this.age = age;
+    _this.images = {
+      url: 'images/playerGirl.png',
+      walk: [],
+      run: [],
+      cycle: [],
+      current: ''
+    };
+    _this.aspect = {
+      width: 50,
+      height: 50
+    };
+    _this.position = { //基本位置 
+      x: 0,
+      y: 0
+    };
     return _this;
   }
 
   _createClass(Player, [{
     key: '_init',
-    value: function _init() {}
+    value: function _init() {
+      var _that = this;
+      var Img = new Image();
+      //console.log(ImgArray[x1][x2].src);
+      Img.src = this.images.url;
+      if (Img.complete) {
+        _that.images.current = Img;
+
+        _that._draw();
+      } else {
+        Img.onload = function () {
+          _that.images.current = this;
+          _that._draw();
+        };
+      };
+    }
   }, {
     key: '_sayAge',
     value: function _sayAge() {
