@@ -6,3 +6,7 @@
 修改js文件前先运行
  gulp watch
  就会自动编译了
+ 
+
+gba游戏和素材下载地址
+http://pan.baidu.com/s/1o7Yso4M
