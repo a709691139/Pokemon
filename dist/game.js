@@ -1,200 +1,65 @@
-'use strict';
+"use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-window.onload = function () {
-	//游戏尺寸调整
-	$(window).resize(function () {
-		//调整尺寸
-		game.box.init();
-		game.ctx.init();
-	});
-};
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var loadData = {
-	num: 0, //图片总数
-	successNum: 0, //成功加载数量
-	imagesUrl: {
-		person: {
-			player: 'images/playerGirl.png'
-		},
-		map: {}
-	},
-	imageObj: {
-		person: {
-			player: ''
-		},
-		map: {}
-	},
-	loading: function loading(resolve, reject) {
-		var _this = this;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		var _that = this;
-		_that.num = 0;
-		_that.successNum = 0;
-		var _success = function _success() {
-			_that.imageObj[arrName][src] = _this;
-			_that.successNum++;
-			console.log(_that.num + ' , ' + _that.successNum);
-			if (_that.num == _that.successNum) {
-				console.log('全部资源加载完毕');
-				return true;
-			}
+var Game = function () {
+	function Game() {
+		_classCallCheck(this, Game);
+
+		this.state = {
+			ongoing: false,
+			winOrlose: false
 		};
-
-		var _loop = function _loop(_arrName) {
-			var _loop2 = function _loop2(_src) {
-				_that.num++;
-				var Img = new Image();
-				Img.src = _that.imagesUrl[_arrName][_src];
-				console.log(_that.imagesUrl[_arrName][_src]);
-				if (Img.complete) {
-					_that.imageObj[_arrName][_src] = Img;
-					_that.successNum++;
-					console.log(_that.num + ' , ' + _that.successNum);
-					if (_that.num == _that.successNum) {
-						console.log('全部资源加载完毕');
-						resolve('全部资源加载完毕');
-						return {
-							v: {
-								v: true
-							}
-						};
-					}
-				} else {
-					Img.onload = function () {
-						_that.imageObj[_arrName][_src] = Img;
-						_that.successNum++;
-						console.log(_that.num + ' , ' + _that.successNum);
-						if (_that.num == _that.successNum) {
-							console.log('全部资源加载完毕');
-							return true;
-						}
-					};
-					Img.onerror = function () {
-						console.log('加载出错 ', Img.src);
-						reject('加载出错 ', Img.src);
-						throw new Error('加载图片出错了');
-					};
-				}
-			};
-
-			for (var _src in _that.imagesUrl[_arrName]) {
-				var _ret2 = _loop2(_src);
-
-				if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
-			}
+		this.control = true; //游戏开始|暂停
+		this.box = {
+			element: document.getElementById("box"),
+			originWidth: 720, //源宽高
+			originHeight: 420,
+			width: 0, //当前宽高
+			height: 0,
+			scaleX: 1, //缩放比
+			scaleY: 1
 		};
-
-		for (var _arrName in _that.imagesUrl) {
-			var _ret = _loop(_arrName);
-
-			if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-		}
-	},
-	init: function init() {
-		var _this2 = this;
-
-		return new Promise(function (resolve, reject) {
-			var _that = _this2;
-			_that.num = 0;
-			_that.successNum = 0;
-
-			var _loop3 = function _loop3(_arrName2) {
-				var _loop4 = function _loop4(_src2) {
-					_that.num++;
-					var Img = new Image();
-					Img.src = _that.imagesUrl[_arrName2][_src2];
-					console.log(_that.imagesUrl[_arrName2][_src2]);
-					if (Img.complete) {
-						_that.imageObj[_arrName2][_src2] = Img;
-						_that.successNum++;
-						console.log(_that.num + ' , ' + _that.successNum);
-						if (_that.num == _that.successNum) {
-							resolve('全部资源加载完毕');
-							return {
-								v: {
-									v: true
-								}
-							};
-						}
-					} else {
-						Img.onload = function () {
-							_that.imageObj[_arrName2][_src2] = Img;
-							_that.successNum++;
-							console.log(_that.num + ' , ' + _that.successNum);
-							if (_that.num == _that.successNum) {
-								resolve('全部资源加载完毕');
-								return true;
-							}
-						};
-						Img.onerror = function () {
-							reject('加载出错 ' + Img.src);
-						};
-					}
-				};
-
-				for (var _src2 in _that.imagesUrl[_arrName2]) {
-					var _ret4 = _loop4(_src2);
-
-					if ((typeof _ret4 === 'undefined' ? 'undefined' : _typeof(_ret4)) === "object") return _ret4.v;
-				}
-			};
-
-			for (var _arrName2 in _that.imagesUrl) {
-				var _ret3 = _loop3(_arrName2);
-
-				if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
-			}
-		});
+		this.ctx = { //画布
+			canvas1: document.getElementById("canvas1"),
+			ctx1: document.getElementById("canvas1").getContext("2d")
+		};
+		this.time = { //时间
+			lastTime: 0,
+			deltaTime: 0 };
 	}
-};
 
-loadData.init().then(function (msg) {
-	console.log('加载成功');
-}, function (error) {
-	console.error('出错了', error);
-});
+	_createClass(Game, [{
+		key: "init",
+		value: function init() {
+			//加载资源
 
-console.log('game');
-var game = {
-	state: {
-		ongoing: false,
-		winOrlose: false
-	},
-	control: true, //游戏开始|暂停
-	box: {
-		element: document.getElementById("box"),
-		originWidth: 720, //源宽高
-		originHeight: 420,
-		width: 0, //当前宽高
-		height: 0,
-		scaleX: 1, //缩放比
-		scaleY: 1,
-		init: function init() {
-			this.width = game.box.element.offsetWidth;
-			this.height = this.width * 7 / 12;
-			this.scaleX = this.width / this.originWidth;
-			this.scaleY = this.height / this.originHeight;
+			//键盘鼠标初始化
+			this.init_keyBoard();
+
+			//读取存储数据？ 关卡数据
+			this.gameloop();
 		}
-	},
-	ctx: { //画布
-		canvas1: document.getElementById("canvas1"),
-		ctx1: document.getElementById("canvas1").getContext("2d"),
-		init: function init() {
-			// this.canvas1.setAttribute("width",game.box.originWidth);
-			// this.canvas1.setAttribute("height",game.box.originHeight);
-			this.canvas1.style.transform = 'scale(' + game.box.scaleX + ',' + game.box.scaleY + ')';
-		},
-		clearCanavs: function clearCanavs() {
-			this.ctx1.clearRect(0, 0, game.box.originWidth, game.box.originHeight);
+	}, {
+		key: "init_box",
+		value: function init_box() {
+			this.box.width = this.box.element.offsetWidth;
+			this.box.height = this.box.width * 7 / 12;
+			this.box.scaleX = this.box.width / this.box.originWidth;
+			this.box.scaleY = this.box.height / this.box.originHeight;
 		}
-	},
-	time: { //时间
-		lastTime: 0,
-		deltaTime: 0 },
-	keyBoard: {
-		init: function init() {
+	}, {
+		key: "init_ctx",
+		value: function init_ctx() {
+			this.ctx.canvas1.style.transform = 'scale(' + game.box.scaleX + ',' + game.box.scaleY + ')';
+		}
+	}, {
+		key: "init_keyBoard",
+		value: function init_keyBoard() {
 			$(document).keydown(function (event) {
 				if (event.keyCode == 37) {
 					//左
@@ -214,76 +79,198 @@ var game = {
 				}
 			});
 		}
-	},
-	init: function init() {
-		//加载资源
-
-		//键盘鼠标初始化
-		game.keyBoard.init();
-
-		//读取存储数据？ 关卡数据
-		game.gameloop();
-	},
-	gameloop: function gameloop() {
-		//画面循环
-		window.requestAnimFrame(game.gameloop); //跟随屏幕分辨率setInterval
-		if (game.control) {
-			var now = new Date();
-			game.time.deltaTime = now - game.time.lastTime;
-			if (game.time.deltaTime > 40) {
-				game.time.deltaTime = 40;
-			}
-			game.time.lastTime = now;
-			game.ctx.clearCanavs();
-
-			//玩家player绘制
-			player._draw();
+	}, {
+		key: "clearCanavs",
+		value: function clearCanavs() {
+			this.ctx.ctx1.clearRect(0, 0, game.box.originWidth, game.box.originHeight);
 		}
-	},
-	collision: function collision() {
-		//碰撞检测
-		//检测敌军是否碰撞上 子弹和飞机 
-		for (var i = 0; i < game.eSoldier.num; i++) {
-			if (game.eSoldier.alive[i]) {
-				//与子弹碰撞
-				for (var j = 0; j < game.bullet.num; j++) {
-					if (game.bullet.alive[j]) {
-						if (rectangleCollision(game.eSoldier.x[i], game.eSoldier.y[i], game.eSoldier.width[i], game.eSoldier.height[i], game.bullet.x[j], game.bullet.y[j], game.bullet.width, game.bullet.height, 1)) {
-							game.eSoldier.beAttacked(i);
-							game.bullet.beAttacked(j);
-						}
-					}
+	}, {
+		key: "gameloop",
+		value: function gameloop() {
+			//画面循环
+			var _that = this;
+			window.requestAnimFrame(function () {
+				_that.gameloop();
+			}); //跟随屏幕分辨率setInterval
+			if (_that.control) {
+				var now = new Date();
+				_that.time.deltaTime = now - _that.time.lastTime;
+				if (_that.time.deltaTime > 40) {
+					_that.time.deltaTime = 40;
 				}
-				//与飞机碰撞
-				if (rectangleCollision(game.eSoldier.x[i], game.eSoldier.y[i], game.eSoldier.width[i], game.eSoldier.height[i], game.plane.x, game.plane.y, game.plane.width, game.plane.height, 10) && !game.plane.noBeAttarct && game.plane.alive) {
-					game.plane.beAttacked();
-				}
+				_that.time.lastTime = now;
+				_that.clearCanavs();
+
+				//玩家player绘制
+				player._draw();
 			}
 		}
-		//检测boss是否碰撞上 子弹和飞机
-		for (var i = 0; i < game.eBoss.num; i++) {
-			if (game.eBoss.alive[i]) {
-				//与子弹碰撞
-				for (var j = 0; j < game.bullet.num; j++) {
-					if (game.bullet.alive[j]) {
-						if (rectangleCollision(game.eBoss.x[i], game.eBoss.y[i], game.eBoss.width[i], game.eBoss.height[i], game.bullet.x[j], game.bullet.y[j], game.bullet.width, game.bullet.height, 1)) {
-							game.bullet.beAttacked(j);
-							game.eBoss.beAttacked(i);
-						}
-					}
-				}
-				//与飞机碰撞
-				if (rectangleCollision(game.eBoss.x[i], game.eBoss.y[i], game.eBoss.width[i], game.eBoss.height[i], game.plane.x, game.plane.y, game.plane.width, game.plane.height, 10) && !game.plane.noBeAttarct && game.plane.alive) {
-					game.plane.beAttacked();
-				}
-			}
-		}
+	}]);
+
+	return Game;
+}();
+
+window.onload = function () {
+	//游戏尺寸调整
+	$(window).resize(function () {
+		//调整尺寸
+		game.box.init();
+		game.ctx.init();
+	});
+
+	function startGame() {
+		var game = new Game();
+		window.game = game;
+		var player = new Player('赵日天', '男', '23');
+		window.player = player;
+		player.init();
+		game.init();
 	}
-};
 
-var player = new Player('赵日天', '男', '23');
-player._init();
-setTimeout(function () {
-	game.init();
-}, 2000);
-// game.init();
+	var loadData = {
+		num: 0, //图片总数
+		successNum: 0, //成功加载数量
+		imagesUrl: {
+			person: {
+				player: 'images/playerGirl.png'
+			},
+			map: {}
+		},
+		imageObj: {
+			person: {
+				player: ''
+			},
+			map: {}
+		},
+		loading: function loading(resolve, reject) {
+			var _this = this;
+
+			var _that = this;
+			_that.num = 0;
+			_that.successNum = 0;
+			var _success = function _success() {
+				_that.imageObj[arrName][src] = _this;
+				_that.successNum++;
+				console.log(_that.num + ' , ' + _that.successNum);
+				if (_that.num == _that.successNum) {
+					console.log('全部资源加载完毕');
+					return true;
+				}
+			};
+
+			var _loop = function _loop(_arrName) {
+				var _loop2 = function _loop2(_src) {
+					_that.num++;
+					var Img = new Image();
+					Img.src = _that.imagesUrl[_arrName][_src];
+					console.log(_that.imagesUrl[_arrName][_src]);
+					if (Img.complete) {
+						_that.imageObj[_arrName][_src] = Img;
+						_that.successNum++;
+						console.log(_that.num + ' , ' + _that.successNum);
+						if (_that.num == _that.successNum) {
+							console.log('全部资源加载完毕');
+							resolve('全部资源加载完毕');
+							return {
+								v: {
+									v: true
+								}
+							};
+						}
+					} else {
+						Img.onload = function () {
+							_that.imageObj[_arrName][_src] = Img;
+							_that.successNum++;
+							console.log(_that.num + ' , ' + _that.successNum);
+							if (_that.num == _that.successNum) {
+								console.log('全部资源加载完毕');
+								return true;
+							}
+						};
+						Img.onerror = function () {
+							console.log('加载出错 ', Img.src);
+							reject('加载出错 ', Img.src);
+							throw new Error('加载图片出错了');
+						};
+					}
+				};
+
+				for (var _src in _that.imagesUrl[_arrName]) {
+					var _ret2 = _loop2(_src);
+
+					if ((typeof _ret2 === "undefined" ? "undefined" : _typeof(_ret2)) === "object") return _ret2.v;
+				}
+			};
+
+			for (var _arrName in _that.imagesUrl) {
+				var _ret = _loop(_arrName);
+
+				if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+			}
+		},
+		init: function init() {
+			var _this2 = this;
+
+			return new Promise(function (resolve, reject) {
+				var _that = _this2;
+				_that.num = 0;
+				_that.successNum = 0;
+
+				var _loop3 = function _loop3(_arrName2) {
+					var _loop4 = function _loop4(_src2) {
+						_that.num++;
+						var Img = new Image();
+						Img.src = _that.imagesUrl[_arrName2][_src2];
+						console.log(_that.imagesUrl[_arrName2][_src2]);
+						if (Img.complete) {
+							_that.imageObj[_arrName2][_src2] = Img;
+							_that.successNum++;
+							console.log(_that.num + ' , ' + _that.successNum);
+							if (_that.num == _that.successNum) {
+								resolve('全部资源加载完毕');
+								return {
+									v: {
+										v: true
+									}
+								};
+							}
+						} else {
+							Img.onload = function () {
+								_that.imageObj[_arrName2][_src2] = Img;
+								_that.successNum++;
+								console.log(_that.num + ' , ' + _that.successNum);
+								if (_that.num == _that.successNum) {
+									resolve('全部资源加载完毕');
+									return true;
+								}
+							};
+							Img.onerror = function () {
+								reject('加载出错 ' + Img.src);
+							};
+						}
+					};
+
+					for (var _src2 in _that.imagesUrl[_arrName2]) {
+						var _ret4 = _loop4(_src2);
+
+						if ((typeof _ret4 === "undefined" ? "undefined" : _typeof(_ret4)) === "object") return _ret4.v;
+					}
+				};
+
+				for (var _arrName2 in _that.imagesUrl) {
+					var _ret3 = _loop3(_arrName2);
+
+					if ((typeof _ret3 === "undefined" ? "undefined" : _typeof(_ret3)) === "object") return _ret3.v;
+				}
+			});
+		}
+	};
+	window.loadData = loadData;
+	loadData.init().then(function (msg) {
+		console.log(msg);
+		console.log('start game');
+		startGame();
+	}, function (error) {
+		console.error(error);
+	});
+};

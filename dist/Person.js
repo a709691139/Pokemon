@@ -100,25 +100,24 @@ var Player = function (_Person) {
   }
 
   _createClass(Player, [{
-    key: '_init',
-    value: function _init() {
-      //this.images.current = loadData.imageObj.person.player;
+    key: 'init',
+    value: function init() {
+      this.images.current = loadData.imageObj.person.player;
 
+      // let _that = this;
+      // let Img = new Image();
+      // //console.log(ImgArray[x1][x2].src);
+      // Img.src = this.images.url;
+      // if(Img.complete){
+      //   //_that.images.current = Img;
 
-      var _that = this;
-      var Img = new Image();
-      //console.log(ImgArray[x1][x2].src);
-      Img.src = this.images.url;
-      if (Img.complete) {
-        //_that.images.current = Img;
-
-        _that._draw();
-      } else {
-        Img.onload = function () {
-          _that.images.current = this;
-          //_that._draw();
-        };
-      };
+      //   _that._draw();
+      // }else{
+      //   Img.onload = function(){
+      //     _that.images.current = this;
+      //     //_that._draw();
+      //   };
+      // };  
     }
   }]);
 
