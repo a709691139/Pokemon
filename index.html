@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html manifest="game.appcache">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>口袋妖怪</title>
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit" />
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true" />
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320" />
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait" />
+<!-- QQ强制竖屏 -->
+<meta name="x5-orientation" content="portrait" />
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes"  />
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true" />
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application" />
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app" />
+<!-- 网站开启对 web app 程序的支持 -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<!-- 顶部状态条为黑色 -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<!-- 忽略页面中的数字识别和邮件识别 -->
+<meta name="format-detection" content="telephone=no,email=no" />
+<!-- 缩放设置 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<link rel="icon" type="image/gif" href="images/icon_pokemon.jpg" >
+<link href="css/pokemon.css" rel="stylesheet"  />
+</head>
+<body ondragstart="return false" onselectstart="return false" >
+<!--oncontextmenu="return false" -->
+    <div id="box">
+   		<!-- 战斗界面 -->
+    	<canvas id="canvas1" width="720" height="420" oncontextmenu="return false"><p>你的浏览器不支持html5</p></canvas>
+    </div>
+</body>
+<!--基础库和函数-->
+<script src="lib/jquery-1.9.0.min.js"></script>
+<script src="lib/jquery.mb.audio.js"></script>
+<script src="dist/commonFunctions.js"></script>
+<script src="dist/Person.js"></script>
+<script src="dist/game.js"></script>
+<script>
+window.onload=function(){
+	//游戏尺寸调整
+	$(window).resize(function() {
+		//调整尺寸
+		game.box.init();
+	  	game.ctx.init(); 	
+	});
+	let player1 = new Player('赵日天','男','23');
+	player1._sayName();
+	player1._sayAge();
+
+	let player2 = new Player('李杀神','男','11');
+	player2._sayName();
+	player2._sayAge();
+	player2._move().left();
+
+}
+
+</script>
+</html>

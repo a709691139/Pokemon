@@ -1,0 +1,46 @@
+﻿2016-10-31
+待完成：
+1、 es6转-es5方法。 gulp  babel编译
+
+2、基本html搭建
+
+3、class People 人物类设计：
+
+People:{
+	position:{ //基本位置 
+		x:0,
+		y:0
+	},
+	aspect:{  //人物宽高
+		width:0,
+		height:0,
+	},
+	images: {  //人物图片 ,以图片左上角为初始点，先考虑用（整图，需计算裁剪图）还是多图(直接切换图片src)
+		walk: [], //走路 存src或位置
+		run: [],  //奔跑
+		cycle:[], //单车
+		current: xxx.png,  //当前图片
+	},
+	move:{  //人物移动
+		left:{},
+		right:{},
+		top:{},
+		bottom:{}
+	},
+	join:{ //点确定，交接交互功能，捡道具之类的
+
+	}
+
+}
+
+4、canvas  源游戏尺寸  240*140
+
+整个界面canvas用大尺寸显示，然后transform:scale缩小;  保存缩放比例 xy ，以后再搞手机版，添加按钮
+
+布局性能优化：采用多层canvas绘图， 背景层，人物层，其他图层
+
+屏幕框移动方法：
+  一切以地图左上角为原点绘制，当前屏幕框(origin.x, origin.y)，其他物体则 drawImage(img, x-originx.x, y-origin.y, width, height);
+  好蛋疼，以后考虑优化不绘制屏幕外的像素
+
+人物图片，考虑用一张大图， 还是多张小图
