@@ -57,3 +57,4 @@ People:{
 2016/11/1
 1、加载资源函数 loadData()
 2、基础人物图片载入canvas和移动
+3、class之间的交流使用， window全局 还是function(obj) 来交流？？？？！
