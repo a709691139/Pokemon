@@ -31,15 +31,11 @@ var Person = function () {
   }
 
   _createClass(Person, [{
-    key: '_sayName',
-    value: function _sayName() {
-      console.log(this.name);
-    }
-  }, {
     key: '_draw',
     value: function _draw() {
       //绘制画面
-      game.ctx.ctx1.drawImage(this.images.current, this.position.x, this.position.y, 403, 78, 0, 0, this.aspect.width, this.aspect.height);
+      game.ctx.ctx1.drawImage(this.images.current, (20 + 14) * 0, 26 * 0, 20, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+      console.log();
     }
   }, {
     key: '_move',
@@ -49,16 +45,16 @@ var Person = function () {
       return {
         left: function left() {
           // _that._sayName();
-          console.log('l');
+          _that.position.x -= 10;
         },
         right: function right() {
-          console.log('r');
+          _that.position.x += 10;
         },
         top: function top() {
-          console.log('t');
+          _that.position.y -= 10;
         },
         bottom: function bottom() {
-          console.log('b');
+          _that.position.y += 10;
         }
       };
     }
@@ -93,8 +89,8 @@ var Player = function (_Person) {
       current: ''
     };
     _this.aspect = {
-      width: 50,
-      height: 50
+      width: 16 * 3,
+      height: 18 * 3
     };
     _this.position = { //基本位置 
       x: 0,
@@ -106,25 +102,23 @@ var Player = function (_Person) {
   _createClass(Player, [{
     key: '_init',
     value: function _init() {
+      //this.images.current = loadData.imageObj.person.player;
+
+
       var _that = this;
       var Img = new Image();
       //console.log(ImgArray[x1][x2].src);
       Img.src = this.images.url;
       if (Img.complete) {
-        _that.images.current = Img;
+        //_that.images.current = Img;
 
         _that._draw();
       } else {
         Img.onload = function () {
           _that.images.current = this;
-          _that._draw();
+          //_that._draw();
         };
       };
-    }
-  }, {
-    key: '_sayAge',
-    value: function _sayAge() {
-      console.log(this.age);
     }
   }]);
 

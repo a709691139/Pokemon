@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 window.onload = function () {
 	//游戏尺寸调整
 	$(window).resize(function () {
@@ -7,19 +9,160 @@ window.onload = function () {
 		game.box.init();
 		game.ctx.init();
 	});
-	var player = new Player('赵日天', '男', '23');
-	player._sayName();
-	player._sayAge();
-	player._move().left();
-	player._init();
 };
 
+var loadData = {
+	num: 0, //图片总数
+	successNum: 0, //成功加载数量
+	imagesUrl: {
+		person: {
+			player: 'images/playerGirl.png'
+		},
+		map: {}
+	},
+	imageObj: {
+		person: {
+			player: ''
+		},
+		map: {}
+	},
+	loading: function loading(resolve, reject) {
+		var _this = this;
+
+		var _that = this;
+		_that.num = 0;
+		_that.successNum = 0;
+		var _success = function _success() {
+			_that.imageObj[arrName][src] = _this;
+			_that.successNum++;
+			console.log(_that.num + ' , ' + _that.successNum);
+			if (_that.num == _that.successNum) {
+				console.log('全部资源加载完毕');
+				return true;
+			}
+		};
+
+		var _loop = function _loop(_arrName) {
+			var _loop2 = function _loop2(_src) {
+				_that.num++;
+				var Img = new Image();
+				Img.src = _that.imagesUrl[_arrName][_src];
+				console.log(_that.imagesUrl[_arrName][_src]);
+				if (Img.complete) {
+					_that.imageObj[_arrName][_src] = Img;
+					_that.successNum++;
+					console.log(_that.num + ' , ' + _that.successNum);
+					if (_that.num == _that.successNum) {
+						console.log('全部资源加载完毕');
+						resolve('全部资源加载完毕');
+						return {
+							v: {
+								v: true
+							}
+						};
+					}
+				} else {
+					Img.onload = function () {
+						_that.imageObj[_arrName][_src] = Img;
+						_that.successNum++;
+						console.log(_that.num + ' , ' + _that.successNum);
+						if (_that.num == _that.successNum) {
+							console.log('全部资源加载完毕');
+							return true;
+						}
+					};
+					Img.onerror = function () {
+						console.log('加载出错 ', Img.src);
+						reject('加载出错 ', Img.src);
+						throw new Error('加载图片出错了');
+					};
+				}
+			};
+
+			for (var _src in _that.imagesUrl[_arrName]) {
+				var _ret2 = _loop2(_src);
+
+				if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+			}
+		};
+
+		for (var _arrName in _that.imagesUrl) {
+			var _ret = _loop(_arrName);
+
+			if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+		}
+	},
+	init: function init() {
+		var _this2 = this;
+
+		return new Promise(function (resolve, reject) {
+			var _that = _this2;
+			_that.num = 0;
+			_that.successNum = 0;
+
+			var _loop3 = function _loop3(_arrName2) {
+				var _loop4 = function _loop4(_src2) {
+					_that.num++;
+					var Img = new Image();
+					Img.src = _that.imagesUrl[_arrName2][_src2];
+					console.log(_that.imagesUrl[_arrName2][_src2]);
+					if (Img.complete) {
+						_that.imageObj[_arrName2][_src2] = Img;
+						_that.successNum++;
+						console.log(_that.num + ' , ' + _that.successNum);
+						if (_that.num == _that.successNum) {
+							resolve('全部资源加载完毕');
+							return {
+								v: {
+									v: true
+								}
+							};
+						}
+					} else {
+						Img.onload = function () {
+							_that.imageObj[_arrName2][_src2] = Img;
+							_that.successNum++;
+							console.log(_that.num + ' , ' + _that.successNum);
+							if (_that.num == _that.successNum) {
+								resolve('全部资源加载完毕');
+								return true;
+							}
+						};
+						Img.onerror = function () {
+							reject('加载出错 ' + Img.src);
+						};
+					}
+				};
+
+				for (var _src2 in _that.imagesUrl[_arrName2]) {
+					var _ret4 = _loop4(_src2);
+
+					if ((typeof _ret4 === 'undefined' ? 'undefined' : _typeof(_ret4)) === "object") return _ret4.v;
+				}
+			};
+
+			for (var _arrName2 in _that.imagesUrl) {
+				var _ret3 = _loop3(_arrName2);
+
+				if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
+			}
+		});
+	}
+};
+
+loadData.init().then(function (msg) {
+	console.log('加载成功');
+}, function (error) {
+	console.error('出错了', error);
+});
+
+console.log('game');
 var game = {
 	state: {
 		ongoing: false,
 		winOrlose: false
 	},
-	control: false, //游戏开始|暂停
+	control: true, //游戏开始|暂停
 	box: {
 		element: document.getElementById("box"),
 		originWidth: 720, //源宽高
@@ -50,10 +193,35 @@ var game = {
 	time: { //时间
 		lastTime: 0,
 		deltaTime: 0 },
+	keyBoard: {
+		init: function init() {
+			$(document).keydown(function (event) {
+				if (event.keyCode == 37) {
+					//左
+					player._move().left();
+				} else if (event.keyCode == 39) {
+					//右
+					player._move().right();
+				} else if (event.keyCode == 38) {
+					//上
+					player._move().top();
+				} else if (event.keyCode == 40) {
+					//下
+					player._move().bottom();
+				} else if (event.keyCode == 13) {
+					//确定
+					player._move()._join();
+				}
+			});
+		}
+	},
 	init: function init() {
-		//键盘鼠标初始化
-		//读取存储数据？ 关卡数据
+		//加载资源
 
+		//键盘鼠标初始化
+		game.keyBoard.init();
+
+		//读取存储数据？ 关卡数据
 		game.gameloop();
 	},
 	gameloop: function gameloop() {
@@ -68,7 +236,8 @@ var game = {
 			game.time.lastTime = now;
 			game.ctx.clearCanavs();
 
-			//game.background.draw();
+			//玩家player绘制
+			player._draw();
 		}
 	},
 	collision: function collision() {
@@ -111,3 +280,10 @@ var game = {
 		}
 	}
 };
+
+var player = new Player('赵日天', '男', '23');
+player._init();
+setTimeout(function () {
+	game.init();
+}, 2000);
+// game.init();

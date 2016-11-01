@@ -5,19 +5,125 @@ window.onload=function(){
 		game.box.init();
 	  	game.ctx.init(); 	
 	});
-	let player = new Player('赵日天','男','23');
-	player._sayName();
-	player._sayAge();
-	player._move().left();
-  	player._init();
+	
+
+	
+};
+
+var loadData = {
+	num:0, //图片总数
+	successNum:0, //成功加载数量
+	imagesUrl:{
+		person:{
+			player:'images/playerGirl.png',
+		},
+		map:{}
+	},
+	imageObj:{
+		person:{
+			player:''
+		},
+		map:{}
+	},
+	loading(resolve, reject){
+		let _that = this;
+		_that.num = 0;
+		_that.successNum = 0;
+		let _success = ()=>{
+			_that.imageObj[arrName][src] = this;
+			_that.successNum++;
+			console.log(_that.num +' , '+ _that.successNum);
+			if(_that.num == _that.successNum){
+				console.log('全部资源加载完毕');
+				return true;
+			}
+		};
+		for(let arrName in _that.imagesUrl){
+			for(let src in _that.imagesUrl[arrName]){
+				_that.num++;
+				let Img = new Image();
+				Img.src = _that.imagesUrl[arrName][src];
+				console.log(_that.imagesUrl[arrName][src]);
+				if(Img.complete){
+					_that.imageObj[arrName][src] = Img;
+					_that.successNum++;
+					console.log(_that.num +' , '+ _that.successNum);
+					if(_that.num == _that.successNum){
+						console.log('全部资源加载完毕');
+						resolve('全部资源加载完毕');
+						return true;
+					}
+				}else{
+					Img.onload = function(){
+				        _that.imageObj[arrName][src] = Img;
+						_that.successNum++;
+						console.log(_that.num +' , '+ _that.successNum);
+						if(_that.num == _that.successNum){
+							console.log('全部资源加载完毕');
+							return true;
+						}
+				    };	
+				    Img.onerror=function(){
+				    	console.log('加载出错 ', Img.src);
+				    	reject('加载出错 ', Img.src);
+				    	throw new Error('加载图片出错了');
+				    }; 
+				}
+			}
+		}
+	},
+	init(){
+		return new Promise((resolve, reject) => {
+		    let _that = this;
+			_that.num = 0;
+			_that.successNum = 0;
+			for(let arrName in _that.imagesUrl){
+				for(let src in _that.imagesUrl[arrName]){
+					_that.num++;
+					let Img = new Image();
+					Img.src = _that.imagesUrl[arrName][src];
+					console.log(_that.imagesUrl[arrName][src]);
+					if(Img.complete){
+						_that.imageObj[arrName][src] = Img;
+						_that.successNum++;
+						console.log(_that.num +' , '+ _that.successNum);
+						if(_that.num == _that.successNum){
+							resolve('全部资源加载完毕');
+							return true;
+						}
+					}else{
+						Img.onload = function(){
+					        _that.imageObj[arrName][src] = Img;
+							_that.successNum++;
+							console.log(_that.num +' , '+ _that.successNum);
+							if(_that.num == _that.successNum){
+								resolve('全部资源加载完毕');
+								return true;
+							}
+					    };	
+					    Img.onerror=function(){
+					    	reject('加载出错 '+ Img.src);
+					    }; 
+					}
+				}
+			}
+		});
+	}
 }
 
+loadData.init().then((msg)=>{
+  console.log('加载成功');
+}, (error)=>{
+  console.error('出错了', error);
+});
+
+console.log('game');
 var game = {
 	state : { 
 		ongoing : false, 
 		winOrlose : false
 	},
-	control : false,  //游戏开始|暂停
+	control : true,  //游戏开始|暂停
 	box:{
 		element:document.getElementById("box"),
 		originWidth:720,  //源宽高
@@ -49,10 +155,38 @@ var game = {
 		lastTime : 0,
 		deltaTime : 0, //每帧间隔时间
 	},
+	keyBoard :{
+		init:function(){
+			$(document).keydown(function(event){ 
+	          if(event.keyCode == 37){ 
+	            //左
+	            player._move().left();
+	          }else if (event.keyCode == 39){ 
+	            //右
+	            player._move().right();
+	          } 
+	          else if (event.keyCode == 38){ 
+	            //上
+	            player._move().top();
+	          } 
+	          else if (event.keyCode == 40){ 
+	            //下
+	            player._move().bottom();
+	          } 
+	          else if (event.keyCode == 13){ 
+	            //确定
+	            player._move()._join();
+	          } 
+	        });
+		}
+	},
 	init : function(){
-		//键盘鼠标初始化
-		//读取存储数据？ 关卡数据
+		//加载资源
 		
+		//键盘鼠标初始化
+		game.keyBoard.init();
+
+		//读取存储数据？ 关卡数据
 		game.gameloop();
 	},
 	gameloop : function(){  //画面循环
@@ -66,7 +200,8 @@ var game = {
 			game.time.lastTime = now;
 			game.ctx.clearCanavs();
 
-			//game.background.draw();
+			//玩家player绘制
+			player._draw();
 
 		}
 	},
@@ -110,3 +245,8 @@ var game = {
 		}
 	},
 };
+
+var player = new Player('赵日天','男','23');
+player._init();
+setTimeout(function(){game.init();},2000)
+// game.init();

@@ -19,12 +19,9 @@ class Person {
     };
   }
 
-  _sayName() {
-    console.log(this.name);
-  }
-
   _draw(){  //绘制画面
-    game.ctx.ctx1.drawImage(this.images.current, this.position.x, this.position.y, 403, 78, 0, 0, this.aspect.width, this.aspect.height);
+    game.ctx.ctx1.drawImage(this.images.current, (20+14)*0, 26*0, 20, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+    console.log()
   }
 
   _move(){  //人物移动
@@ -32,16 +29,16 @@ class Person {
     return{
       left(){
         // _that._sayName();
-        console.log('l');
+        _that.position.x -=10;
       },
       right(){
-        console.log('r');
+        _that.position.x +=10;
       },
       top(){
-        console.log('t');
+        _that.position.y -=10;
       },
       bottom(){
-        console.log('b');
+        _that.position.y +=10;
       }  
     }
   }
@@ -63,8 +60,8 @@ class Player extends Person {
       current: '',
     };
     this.aspect = {  
-      width:50,
-      height:50,
+      width:16*3,
+      height:18*3,
     };
     this.position = { //基本位置 
       x:0,
@@ -73,25 +70,22 @@ class Player extends Person {
   }
 
   _init(){
+    //this.images.current = loadData.imageObj.person.player;
+
+
     let _that = this;
     let Img = new Image();
     //console.log(ImgArray[x1][x2].src);
     Img.src = this.images.url;
     if(Img.complete){
-      _that.images.current = Img;
+      //_that.images.current = Img;
 
       _that._draw();
     }else{
       Img.onload = function(){
         _that.images.current = this;
-        _that._draw();
+        //_that._draw();
       };
     };  
-  }
-
-
-
-  _sayAge(){
-    console.log(this.age);
   }
 }
