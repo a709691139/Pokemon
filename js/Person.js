@@ -27,24 +27,33 @@ class Person {
   _draw(){  //绘制画面   
   }
 
+  _changeImgIndex(direction){
+    this.images.currentIndex.direct = direction;
+    let direct = this.images.currentIndex.direct;
+    let lastIndex = this.images.currentIndex.img;
+    let index = 3 * direct;
+    this.images.currentIndex.img = (lastIndex == index +1) ? index+2 : index+1;
+  }
   _move(){  //人物移动
     let _that = this;
+
     return{
       left(){
         // _that._sayName();
         _that.position.x -=10;
+        _that._changeImgIndex(3);
       },
       right(){
         _that.position.x +=10;
+        _that._changeImgIndex(1);
       },
       top(){
         _that.position.y -=10;
+        _that._changeImgIndex(2);
       },
       bottom(){
         _that.position.y +=10;
-
-        _that.images.currentIndex.img = (_that.images.currentIndex.img==1)?2:1;
-        console.log(_that.images.currentIndex.img);
+        _that._changeImgIndex(0);
       }  
     }
   }

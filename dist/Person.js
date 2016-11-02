@@ -40,26 +40,37 @@ var Person = function () {
     value: function _draw() {//绘制画面   
     }
   }, {
+    key: '_changeImgIndex',
+    value: function _changeImgIndex(direction) {
+      this.images.currentIndex.direct = direction;
+      var direct = this.images.currentIndex.direct;
+      var lastIndex = this.images.currentIndex.img;
+      var index = 3 * direct;
+      this.images.currentIndex.img = lastIndex == index + 1 ? index + 2 : index + 1;
+    }
+  }, {
     key: '_move',
     value: function _move() {
       //人物移动
       var _that = this;
+
       return {
         left: function left() {
           // _that._sayName();
           _that.position.x -= 10;
+          _that._changeImgIndex(3);
         },
         right: function right() {
           _that.position.x += 10;
+          _that._changeImgIndex(1);
         },
         top: function top() {
           _that.position.y -= 10;
+          _that._changeImgIndex(2);
         },
         bottom: function bottom() {
           _that.position.y += 10;
-
-          _that.images.currentIndex.img = _that.images.currentIndex.img == 1 ? 2 : 1;
-          console.log(_that.images.currentIndex.img);
+          _that._changeImgIndex(0);
         }
       };
     }
