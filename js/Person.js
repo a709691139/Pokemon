@@ -28,11 +28,17 @@ class Person {
   }
 
   _changeImgIndex(direction){
-    this.images.currentIndex.direct = direction;
-    let direct = this.images.currentIndex.direct;
-    let lastIndex = this.images.currentIndex.img;
-    let index = 3 * direct;
-    this.images.currentIndex.img = (lastIndex == index +1) ? index+2 : index+1;
+    let index = 3 * direction;
+    if(this.images.currentIndex.direct != direction){ //与上次方向不同
+      this.images.currentIndex.direct = direction;   
+      this.images.currentIndex.img = index;
+    }else{
+      this.images.currentIndex.img++;
+      if(this.images.currentIndex.img >= index+3){
+        this.images.currentIndex.img = index;
+      }  
+    }
+    
   }
   _move(){  //人物移动
     let _that = this;

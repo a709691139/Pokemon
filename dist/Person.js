@@ -42,11 +42,17 @@ var Person = function () {
   }, {
     key: '_changeImgIndex',
     value: function _changeImgIndex(direction) {
-      this.images.currentIndex.direct = direction;
-      var direct = this.images.currentIndex.direct;
-      var lastIndex = this.images.currentIndex.img;
-      var index = 3 * direct;
-      this.images.currentIndex.img = lastIndex == index + 1 ? index + 2 : index + 1;
+      var index = 3 * direction;
+      if (this.images.currentIndex.direct != direction) {
+        //与上次方向不同
+        this.images.currentIndex.direct = direction;
+        this.images.currentIndex.img = index;
+      } else {
+        this.images.currentIndex.img++;
+        if (this.images.currentIndex.img >= index + 3) {
+          this.images.currentIndex.img = index;
+        }
+      }
     }
   }, {
     key: '_move',
