@@ -33,6 +33,8 @@ var Person = function () {
         img: 0, //方向图 0-2下  3-5右 6-8上 9-11左
         direct: 0 }
     };
+    this.isMoveing = false; //移动一步
+    this.moveTime = 0; //移动切换图片定时器
   }
 
   _createClass(Person, [{
@@ -48,18 +50,20 @@ var Person = function () {
         this.images.currentIndex.direct = direction;
         this.images.currentIndex.img = index;
       } else {
+        //500ms移动一格
+        this.moveTime += game.time.deltaTime;
         switch (direction) {
           case 3:
-            this.position.x -= 10;
+            this.position.x -= 5;
             break;
           case 1:
-            this.position.x += 10;
+            this.position.x += 5;
             break;
           case 2:
-            this.position.y -= 10;
+            this.position.y -= 5;
             break;
           case 0:
-            this.position.y += 10;
+            this.position.y += 5;
             break;
         }
         this.images.currentIndex.img++;
@@ -69,27 +73,105 @@ var Person = function () {
       }
     }
   }, {
+    key: '_moveStep',
+    value: function _moveStep() {
+      //移动一步
+      if (!this.isMoveing) {
+        return false;
+      }
+      //走路动画,500ms内走完
+      this.moveTime += game.time.deltaTime;
+
+      //切换图
+      var index = 3 * this.images.currentIndex.direct;
+      if (this.moveTime > 600) {
+        this.moveTime = 0;
+        //回归站立图
+        this.images.currentIndex.img = index;
+        this.isMoveing = false;
+        return false;
+      }
+      var add = 0;
+
+      switch (Math.floor(this.moveTime / 100)) {
+        case 0:
+          add = 1;
+          break;
+          break;
+        case 2:
+          add = 2;
+          break;
+          break;
+        case 4:
+          add = 1;
+          break;
+        case 6:
+          add = 2;
+          break;
+      }
+
+      this.images.currentIndex.img = index + add;
+      //移动
+      var speed = this.aspect.width / 600 * game.time.deltaTime;
+      switch (this.images.currentIndex.direct) {
+        case 3:
+          this.position.x -= speed;
+          break;
+        case 1:
+          this.position.x += speed;
+          break;
+        case 2:
+          this.position.y -= speed;
+          break;
+        case 0:
+          this.position.y += speed;
+          break;
+      }
+
+      //console.log(this.moveTime , this.position.y);
+      //console.log(this.moveTime, this.images.currentIndex.img);
+    }
+  }, {
     key: '_move',
     value: function _move() {
       //人物移动
+      //按着键盘200ms抬起就是 纯切换方向，继续就是向前一步
       var _that = this;
+      _that.moveTime = 0;
 
       return {
         left: function left() {
           //_that.position.x -=10;
-          _that._changeImgIndex(3);
+          //_that._changeImgIndex(3);
+          _that.images.currentIndex.direct = 3;
+          if (!_that.isMoveing) {
+            _that.isMoveing = true;
+          }
         },
         right: function right() {
           // _that.position.x +=10;
-          _that._changeImgIndex(1);
+          // _that._changeImgIndex(1);
+          _that.images.currentIndex.direct = 1;
+          if (!_that.isMoveing) {
+            _that.isMoveing = true;
+            console.log('再走一步');
+          }
         },
         top: function top() {
           //_that.position.y -=10;
-          _that._changeImgIndex(2);
+          //_that._changeImgIndex(2);
+          _that.images.currentIndex.direct = 2;
+          if (!_that.isMoveing) {
+            _that.isMoveing = true;
+          }
         },
         bottom: function bottom() {
           //_that.position.y +=10;
-          _that._changeImgIndex(0);
+          //_that._changeImgIndex(0);
+          _that.images.currentIndex.direct = 0;
+          if (!_that.isMoveing) {
+            _that.isMoveing = true;
+          }
         }
       };
     }
@@ -163,7 +245,9 @@ var Player = function (_Person) {
     value: function _draw() {
       //绘制画面
       if (game) {
-        game.ctx.ctx1.drawImage(this.images.current, (20 + 14.5) * this.images.currentIndex.img, 26 * this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+        this._moveStep();
+        game.ctx.ctx1.drawImage(this.images.current, (20 + 15) * this.images.currentIndex.img, 26 * this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+
         // for(let i=0;i<=12;i++){
         //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*0, 24, 26, this.position.x+this.aspect.width*i, this.position.y, this.aspect.width, this.aspect.height);
         //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*1, 24, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*1, this.aspect.width, this.aspect.height);
