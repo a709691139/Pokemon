@@ -15,13 +15,16 @@ class Person {
       walk: [], //走路 存src或位置
       run: [],  //奔跑
       cycle:[], //单车
-      current: '',  //当前图片
+      current: '',  //当前图片obj
+      currentIndex:{
+        arr:0, //0走路 1跑 2车
+        img:0, //方向图 0-2下  3-5右 6-8上 9-11左
+        direct:0,  // 0下  1右 2上 3左
+      }
     };
   }
 
-  _draw(){  //绘制画面
-    game.ctx.ctx1.drawImage(this.images.current, (20+14)*0, 26*0, 20, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
-    console.log()
+  _draw(){  //绘制画面   
   }
 
   _move(){  //人物移动
@@ -39,6 +42,9 @@ class Person {
       },
       bottom(){
         _that.position.y +=10;
+
+        _that.images.currentIndex.img = (_that.images.currentIndex.img==1)?2:1;
+        console.log(_that.images.currentIndex.img);
       }  
     }
   }
@@ -58,6 +64,11 @@ class Player extends Person {
       run: [], 
       cycle:[], 
       current: '',
+      currentIndex:{
+        arr:0, //0走路 1跑 2车
+        img:0, //方向图 0-2下  3-5右 6-8上 9-11左
+        direct:0,  // 0下  1右 2上 3左
+      }
     };
     this.aspect = {  
       width:16*3,
@@ -87,5 +98,16 @@ class Player extends Person {
     //     //_that._draw();
     //   };
     // };  
+  }
+  _draw(){  //绘制画面
+    if(game){
+      game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 23, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+      // for(let i=0;i<=12;i++){
+      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*0, 23, 26, this.position.x+this.aspect.width*i, this.position.y, this.aspect.width, this.aspect.height);
+      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*1, 23, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*1, this.aspect.width, this.aspect.height);
+      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*2, 23, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*2, this.aspect.width, this.aspect.height);
+      // }
+    }
+    
   }
 }

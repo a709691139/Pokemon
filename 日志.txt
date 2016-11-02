@@ -58,3 +58,27 @@ People:{
 1、加载资源函数 loadData()
 2、基础人物图片载入canvas和移动
 3、class之间的交流使用， window全局 还是function(obj) 来交流？？？？！
+
+2016/11/2
+1、人物走路分析
+  
+  keydown right :
+  	计时 time
+  	if(time>200){
+		持续左右脚切换, 2-3图, 
+  	}
+
+  keyup right :
+  	if(time<200){
+  		if(人物面向右边||右1图){
+  			走一步 切换23图 回归1
+  		}else{
+  			从左切换到右，有一个换脚动作
+			draw 右2图 ->  右1图
+  		}
+  	}else{ 
+  		//走一步
+  	}
+
+
+
