@@ -28,31 +28,51 @@ class Person {
   }
 
   _changeImgIndex(direction){
-    this.images.currentIndex.direct = direction;
-    let direct = this.images.currentIndex.direct;
-    let lastIndex = this.images.currentIndex.img;
-    let index = 3 * direct;
-    this.images.currentIndex.img = (lastIndex == index +1) ? index+2 : index+1;
+    let index = 3 * direction;
+    if(this.images.currentIndex.direct != direction){ 
+      console.log('切换方向');
+      this.images.currentIndex.direct = direction;   
+      this.images.currentIndex.img = index;
+    }else{
+      switch(direction){
+        case 3:
+        this.position.x -=10;
+        break;
+        case 1:
+        this.position.x +=10;
+        break;
+        case 2:
+        this.position.y -=10;
+        break;
+        case 0:
+        this.position.y +=10;
+        break;
+      }
+      this.images.currentIndex.img++;
+      if(this.images.currentIndex.img >= index+3){
+        this.images.currentIndex.img = index;
+      }  
+    }
+    
   }
   _move(){  //人物移动
     let _that = this;
 
     return{
       left(){
-        // _that._sayName();
-        _that.position.x -=10;
+        //_that.position.x -=10;
         _that._changeImgIndex(3);
       },
       right(){
-        _that.position.x +=10;
+       // _that.position.x +=10;
         _that._changeImgIndex(1);
       },
       top(){
-        _that.position.y -=10;
+        //_that.position.y -=10;
         _that._changeImgIndex(2);
       },
       bottom(){
-        _that.position.y +=10;
+        //_that.position.y +=10;
         _that._changeImgIndex(0);
       }  
     }
@@ -110,11 +130,11 @@ class Player extends Person {
   }
   _draw(){  //绘制画面
     if(game){
-      game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 23, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+      game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
       // for(let i=0;i<=12;i++){
-      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*0, 23, 26, this.position.x+this.aspect.width*i, this.position.y, this.aspect.width, this.aspect.height);
-      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*1, 23, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*1, this.aspect.width, this.aspect.height);
-      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*2, 23, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*2, this.aspect.width, this.aspect.height);
+      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*0, 24, 26, this.position.x+this.aspect.width*i, this.position.y, this.aspect.width, this.aspect.height);
+      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*1, 24, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*1, this.aspect.width, this.aspect.height);
+      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*2, 24, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*2, this.aspect.width, this.aspect.height);
       // }
     }
     
