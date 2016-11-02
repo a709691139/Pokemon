@@ -39,7 +39,7 @@
 <!--oncontextmenu="return false" -->
     <div id="box">
    		<!-- 战斗界面 -->
-    	<canvas id="canvas1" width="720" height="420" oncontextmenu="return false"><p>你的浏览器不支持html5</p></canvas>
+    	<canvas id="canvas1" width="720" height="420"><p>你的浏览器不支持html5</p></canvas>
     </div>
 </body>
 <!--基础库和函数-->
@@ -49,19 +49,7 @@
 <script src="dist/Person.js"></script>
 <script src="dist/game.js"></script>
 <script>
-window.onload=function(){
-	//游戏尺寸调整
-	$(window).resize(function() {
-		//调整尺寸
-		game.box.init();
-	  	game.ctx.init(); 	
-	});
-	let player = new Player('赵日天','男','23');
-	player._sayName();
-	player._sayAge();
-	player._move().left();
-  	player._init();
-}
+
 
 </script>
 </html>
