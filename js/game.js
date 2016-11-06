@@ -22,6 +22,38 @@ class Game {
 			lastTime : 0,
 			deltaTime : 0, //每帧间隔时间
 		};
+		this.onKeepKey = { //当前正在按的按键
+			left:{
+				keyCode: 37,
+				time: 0,
+				func: '',
+				on: false,
+			},
+			right:{
+				keyCode: 39,
+				time: 0,
+				func: '',
+				on: false,
+			},
+			up:{
+				keyCode: 38,
+				time: 0,
+				func: '',
+				on: false,
+			},
+			down:{
+				keyCode: 40,
+				time: 0,
+				func: '',
+				on: false,
+			},
+			enter:{
+				keyCode: 13,
+				time: 0,
+				func: '',
+				on: false,
+			},
+		};
 	}
 	
 	init(){
@@ -49,26 +81,47 @@ class Game {
 	}
 
 	init_keyBoard(){
+		this.onKeepKey.left.func = player._move().left;
+		this.onKeepKey.right.func = player._move().right;
+		this.onKeepKey.up.func = player._move().up;
+		this.onKeepKey.down.func = player._move().down;
+		this.onKeepKey.enter.func = player._join;
+		let _that = this;
+		//keydown记录按下的键，keyup取消，
 		$(document).keydown(function(event){ 
-          if(event.keyCode == 37){ 
-            //左
-            player._move().left();
-          }else if (event.keyCode == 39){ 
-            //右
-            player._move().right();
-          } 
-          else if (event.keyCode == 38){ 
-            //上
-            player._move().top();
-          } 
-          else if (event.keyCode == 40){ 
-            //下
-            player._move().bottom();
-          } 
-          else if (event.keyCode == 13){ 
-            //确定
-            player._move()._join();
-          } 
+			for(let i in _that.onKeepKey){
+				let val = _that.onKeepKey[i];
+				if( val.keyCode == event.keyCode ){
+					let newTime = new Date();
+					if(newTime - val.time > 200  && val.on){ //按时间>200 和 不是第一次按
+						val.func('长按');	
+						val.time = newTime;
+						console.log('长按',i);
+					}else{
+						console.log('no');
+						val.on = true;
+						//val.time = newTime;
+					}
+					if(!val.on){
+						val.time = newTime;
+					}
+					
+				}
+			};
+        });
+		$(document).keyup(function(event){ 
+			for(let i in _that.onKeepKey){
+				let val = _that.onKeepKey[i];
+				if( val.keyCode == event.keyCode ){
+					let newTime = new Date();
+					if(newTime - val.time <= 200 ){
+						val.func('短按');
+						console.log('短按',i);	
+						val.on = false;
+						val.time = 0;
+					}	
+				}
+			};
         });
 	}
 

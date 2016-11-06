@@ -30,37 +30,6 @@ class Person {
   _draw(){  //绘制画面   
   }
 
-  _changeImgIndex(direction){
-    let index = 3 * direction;
-    if(this.images.currentIndex.direct != direction){ 
-      console.log('切换方向');
-      this.images.currentIndex.direct = direction;   
-      this.images.currentIndex.img = index;
-    }else{
-      //500ms移动一格
-      this.moveTime += game.time.deltaTime;
-      switch(direction){
-        case 3:
-        this.position.x -=5;
-        break;
-        case 1:
-        this.position.x +=5;
-        break;
-        case 2:
-        this.position.y -=5;
-        break;
-        case 0:
-        this.position.y +=5;
-        break;
-      }
-      this.images.currentIndex.img++;
-      if(this.images.currentIndex.img >= index+3){
-        this.images.currentIndex.img = index;
-      }  
-    }
-    
-  }
-
   _changePosition(direct,speed,distant){
     speed = (speed==0)?distant:speed;
     switch(direct){
@@ -81,17 +50,19 @@ class Person {
 
   _moveStep(){//移动一步
     if(!this.isMoveing){ return false; }
-    //走路动画,600ms内走完
+    //走路动画,300ms内走完
+    let onceTime = 400;
     this.moveTime += game.time.deltaTime;
     let stepDistant = this.aspect.width; //一步距离
     //移动
-    let speed = (stepDistant/600) * game.time.deltaTime;
+    let speed = (stepDistant/onceTime) * game.time.deltaTime;
     this._changePosition(this.images.currentIndex.direct ,speed);
     this.movedStepDistant += speed;
 
     //切换图
+    
     let index = 3 * this.images.currentIndex.direct;
-    if(this.moveTime>600){
+    if(this.moveTime > onceTime){
       //会有时间误差的，没到达最远距离，下面直接瞬移过去
       this.moveTime = 0;
       //回归站立图
@@ -104,22 +75,17 @@ class Person {
     }
     let add = 0;
     
-    switch(Math.floor(this.moveTime /100)){
+    
+    let imgIndex = Math.floor( this.moveTime / onceTime * 3 );
+    switch(imgIndex){
       case 0:
       add = 1;
-      break;
       break;
       case 2:
       add = 2;
       break;
-      break;
-      case 4:
-      add = 1;
-      break;
-      case 6:
-      add = 2;
-      break;
     }
+    //console.log(imgIndex,add);
     
     this.images.currentIndex.img = index + add;
     
@@ -131,12 +97,10 @@ class Person {
   _move(){  //人物移动
     //按着键盘200ms抬起就是 纯切换方向，继续就是向前一步
     let _that = this;
-
     return{
       left(){
         //_that.position.x -=10;
         //_that._changeImgIndex(3);
-        
         if(!_that.isMoveing){
           _that.images.currentIndex.direct = 3;
           _that.isMoveing = true;
@@ -149,10 +113,9 @@ class Person {
         if(!_that.isMoveing){
           _that.images.currentIndex.direct = 1;
           _that.isMoveing = true;
-          console.log('再走一步');
         }
       },
-      top(){
+      up(){
         //_that.position.y -=10;
         //_that._changeImgIndex(2);
         
@@ -161,7 +124,7 @@ class Person {
           _that.isMoveing = true;
         }
       },
-      bottom(){
+      down(){
         //_that.position.y +=10;
         //_that._changeImgIndex(0);
         
