@@ -101,25 +101,32 @@ var Game = function () {
 			this.onKeepKey.down.func = player._move().down;
 			this.onKeepKey.enter.func = player._join;
 			var _that = this;
+			var Time = 0;
 			//keydown记录按下的键，keyup取消，
 			$(document).keydown(function (event) {
+				// if(Time == 0){
+				// 	console.log('0');
+				// 	Time = new Date();
+				// }
+				// console.log(new Date()-Time);
+
 				for (var i in _that.onKeepKey) {
 					var val = _that.onKeepKey[i];
 					if (val.keyCode == event.keyCode) {
 						var newTime = new Date();
-						if (newTime - val.time > 200 && val.on) {
-							//按时间>200 和 不是第一次按
-							val.func('长按');
-							val.time = newTime;
-							console.log('长按', i);
-						} else {
-							console.log('no');
-							val.on = true;
-							//val.time = newTime;
-						}
 						if (!val.on) {
 							val.time = newTime;
+							val.on = true;
+							continue;
 						}
+						if (newTime - val.time > 200 && val.on) {
+							//按时间>200 和 不是第一次按 ,,- - 窝草，js连续按同一个键， 按下去触发keydown,第二次触发要等500ms;
+							val.func('长按');
+
+							//val.time = newTime;
+							console.log('长按', i);
+						}
+						// console.log(newTime - val.time);		
 					}
 				};
 			});
@@ -131,9 +138,9 @@ var Game = function () {
 						if (newTime - val.time <= 200) {
 							val.func('短按');
 							console.log('短按', i);
-							val.on = false;
-							val.time = 0;
 						}
+						val.on = false;
+						val.time = 0;
 					}
 				};
 			});
