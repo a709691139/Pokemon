@@ -6,7 +6,7 @@ class Game {
 		};
 		this.control = true;  //游戏开始|暂停
 		this.box = {
-			element:document.getElementById("box"),
+			element: '',
 			originWidth:720,  //源宽高
 			originHeight:420,
 			width:0,  //当前宽高
@@ -15,8 +15,8 @@ class Game {
 			scaleY:1,
 		};
 		this.ctx = {     //画布
-			canvas1 : document.getElementById("canvas1"),
-			ctx1 : document.getElementById("canvas1").getContext("2d"),
+			canvas1 : '',
+			ctx1 : '',
 		};
 		this.time = {    //时间
 			lastTime : 0,
@@ -28,18 +28,21 @@ class Game {
 				time: 0,
 				func: '',
 				on: false,
+				together: false,
 			},
 			right:{
 				keyCode: 39,
 				time: 0,
 				func: '',
 				on: false,
+				together: false,
 			},
 			up:{
 				keyCode: 38,
 				time: 0,
 				func: '',
 				on: false,
+				together: false,
 			},
 			down:{
 				keyCode: 40,
@@ -52,6 +55,7 @@ class Game {
 				time: 0,
 				func: '',
 				on: false,
+				together: false,
 			},
 		};
 	}
@@ -70,6 +74,7 @@ class Game {
 	}
 
 	init_box(){
+		this.box.element = document.getElementById("box");
 		this.box.width = this.box.element.offsetWidth;
 		this.box.height = this.box.width *7/12;
 		this.box.scaleX = this.box.width / this.box.originWidth;
@@ -77,6 +82,8 @@ class Game {
 	}
 
 	init_ctx(){
+		this.ctx.canvas1 = document.getElementById("canvas1");
+		this.ctx.ctx1 = this.ctx.canvas1.getContext("2d");
 		this.ctx.canvas1.style.transform = 'scale('+ game.box.scaleX +','+ game.box.scaleY +')';
 	}
 
@@ -90,28 +97,37 @@ class Game {
 		let Time = 0;
 		//keydown记录按下的键，keyup取消，
 		$(document).keydown(function(event){ 
-			// if(Time == 0){
-			// 	console.log('0');
-			// 	Time = new Date();
-			// }
-			// console.log(new Date()-Time);
-
 			for(let i in _that.onKeepKey){
 				let val = _that.onKeepKey[i];
 				if( val.keyCode == event.keyCode ){
-					let newTime = new Date();
-					if(!val.on){
-						val.time = newTime;
-						val.on = true;
-						continue;
+					//console.log('按下',i, !val.on?'触发':'不触发');
+					if( !val.on ){ 
+						val.on = true; 
+						val.together = false;
+						val.time = new Date(); 
+						console.log('new Time');
+						break;
 					}
-					if(newTime - val.time > 200  && val.on){ //按时间>200 和 不是第一次按 ,,- - 窝草，js连续按同一个键， 按下去触发keydown,第二次触发要等500ms;
-						val.func('长按');	
+
+					// let newTime = new Date();
+					// if(!val.on){
+					// 	val.time = newTime;
+					// 	val.on = true;
+					// 	continue;
+					// }
+					// if(newTime - val.time > 200  && val.on){ //按时间>200 和 不是第一次按 ,,- - 窝草，js连续按同一个键， 按下去触发keydown,第二次触发要等500ms;
+					// 	val.func('长按');	
 						
-						//val.time = newTime;
-						console.log('长按',i);
-					}	
+					// 	//val.time = newTime;
+					// 	console.log('长按',i);
+					// }	
 					// console.log(newTime - val.time);		
+				}
+				//暂时停止其他的同按，抬起时就回复其他的同按
+				if( val.on ){
+					val.on = false;
+					val.together = true;
+					!val.together && (val.together = true);
 				}
 			};
         });
@@ -119,16 +135,29 @@ class Game {
 			for(let i in _that.onKeepKey){
 				let val = _that.onKeepKey[i];
 				if( val.keyCode == event.keyCode ){
-					let newTime = new Date();
-					if(newTime - val.time <= 200 ){
-						val.func('短按');
-						console.log('短按',i);	
-					}	
+					//console.log('抬起',i);
 					val.on = false;
-					val.time = 0;
+					val.together = false;
+					break;
+				}
+				if( val.together && !val.on){
+					val.together = false;
+					val.on = true;
 				}
 			};
         });
+	}
+
+	fn_loop_keyBoard(){
+		//判断按钮 执行相关方法
+		for(let i in this.onKeepKey){
+			let val = this.onKeepKey[i];
+			if( val.on ){
+				let key = new Date - val.time >200 ? 1 : 0;
+				console.log( i , key==0?'短按':'长按' , val.time, new Date - val.time );
+				val.func(key);//0短按 1长按
+			}
+		};
 	}
 
 	clearCanavs(){
@@ -146,7 +175,8 @@ class Game {
 			}
 			_that.time.lastTime = now;
 			_that.clearCanavs();
-
+			//按键
+			_that.fn_loop_keyBoard();
 			//玩家player绘制
 			player._draw();
 

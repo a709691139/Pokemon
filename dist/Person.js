@@ -116,10 +116,12 @@ var Person = function () {
       //按着键盘200ms抬起就是 纯切换方向，继续就是向前一步
       var _that = this;
       return {
-        left: function left() {
+        left: function left(key) {
+          //key 0短按，1长按
           //_that.position.x -=10;
           //_that._changeImgIndex(3);
           if (!_that.isMoveing) {
+            console.log();
             _that.images.currentIndex.direct = 3;
             _that.isMoveing = true;
           }

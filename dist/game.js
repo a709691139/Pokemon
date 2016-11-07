@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -16,7 +16,7 @@ var Game = function () {
 		};
 		this.control = true; //游戏开始|暂停
 		this.box = {
-			element: document.getElementById("box"),
+			element: '',
 			originWidth: 720, //源宽高
 			originHeight: 420,
 			width: 0, //当前宽高
@@ -25,8 +25,8 @@ var Game = function () {
 			scaleY: 1
 		};
 		this.ctx = { //画布
-			canvas1: document.getElementById("canvas1"),
-			ctx1: document.getElementById("canvas1").getContext("2d")
+			canvas1: '',
+			ctx1: ''
 		};
 		this.time = { //时间
 			lastTime: 0,
@@ -36,19 +36,22 @@ var Game = function () {
 				keyCode: 37,
 				time: 0,
 				func: '',
-				on: false
+				on: false,
+				together: false
 			},
 			right: {
 				keyCode: 39,
 				time: 0,
 				func: '',
-				on: false
+				on: false,
+				together: false
 			},
 			up: {
 				keyCode: 38,
 				time: 0,
 				func: '',
-				on: false
+				on: false,
+				together: false
 			},
 			down: {
 				keyCode: 40,
@@ -60,13 +63,14 @@ var Game = function () {
 				keyCode: 13,
 				time: 0,
 				func: '',
-				on: false
+				on: false,
+				together: false
 			}
 		};
 	}
 
 	_createClass(Game, [{
-		key: "init",
+		key: 'init',
 		value: function init() {
 			//界面尺寸调整
 			game.init_box();
@@ -80,20 +84,23 @@ var Game = function () {
 			this.gameloop();
 		}
 	}, {
-		key: "init_box",
+		key: 'init_box',
 		value: function init_box() {
+			this.box.element = document.getElementById("box");
 			this.box.width = this.box.element.offsetWidth;
 			this.box.height = this.box.width * 7 / 12;
 			this.box.scaleX = this.box.width / this.box.originWidth;
 			this.box.scaleY = this.box.height / this.box.originHeight;
 		}
 	}, {
-		key: "init_ctx",
+		key: 'init_ctx',
 		value: function init_ctx() {
+			this.ctx.canvas1 = document.getElementById("canvas1");
+			this.ctx.ctx1 = this.ctx.canvas1.getContext("2d");
 			this.ctx.canvas1.style.transform = 'scale(' + game.box.scaleX + ',' + game.box.scaleY + ')';
 		}
 	}, {
-		key: "init_keyBoard",
+		key: 'init_keyBoard',
 		value: function init_keyBoard() {
 			this.onKeepKey.left.func = player._move().left;
 			this.onKeepKey.right.func = player._move().right;
@@ -104,29 +111,37 @@ var Game = function () {
 			var Time = 0;
 			//keydown记录按下的键，keyup取消，
 			$(document).keydown(function (event) {
-				// if(Time == 0){
-				// 	console.log('0');
-				// 	Time = new Date();
-				// }
-				// console.log(new Date()-Time);
-
 				for (var i in _that.onKeepKey) {
 					var val = _that.onKeepKey[i];
 					if (val.keyCode == event.keyCode) {
-						var newTime = new Date();
+						//console.log('按下',i, !val.on?'触发':'不触发');
 						if (!val.on) {
-							val.time = newTime;
 							val.on = true;
-							continue;
+							val.together = false;
+							val.time = new Date();
+							console.log('new Time');
+							break;
 						}
-						if (newTime - val.time > 200 && val.on) {
-							//按时间>200 和 不是第一次按 ,,- - 窝草，js连续按同一个键， 按下去触发keydown,第二次触发要等500ms;
-							val.func('长按');
 
-							//val.time = newTime;
-							console.log('长按', i);
-						}
+						// let newTime = new Date();
+						// if(!val.on){
+						// 	val.time = newTime;
+						// 	val.on = true;
+						// 	continue;
+						// }
+						// if(newTime - val.time > 200  && val.on){ //按时间>200 和 不是第一次按 ,,- - 窝草，js连续按同一个键， 按下去触发keydown,第二次触发要等500ms;
+						// 	val.func('长按');	
+
+						// 	//val.time = newTime;
+						// 	console.log('长按',i);
+						// }	
 						// console.log(newTime - val.time);		
+					}
+					//暂时停止其他的同按，抬起时就回复其他的同按
+					if (val.on) {
+						val.on = false;
+						val.together = true;
+						!val.together && (val.together = true);
 					}
 				};
 			});
@@ -134,24 +149,38 @@ var Game = function () {
 				for (var i in _that.onKeepKey) {
 					var val = _that.onKeepKey[i];
 					if (val.keyCode == event.keyCode) {
-						var newTime = new Date();
-						if (newTime - val.time <= 200) {
-							val.func('短按');
-							console.log('短按', i);
-						}
+						//console.log('抬起',i);
 						val.on = false;
-						val.time = 0;
+						val.together = false;
+						break;
+					}
+					if (val.together && !val.on) {
+						val.together = false;
+						val.on = true;
 					}
 				};
 			});
 		}
 	}, {
-		key: "clearCanavs",
+		key: 'fn_loop_keyBoard',
+		value: function fn_loop_keyBoard() {
+			//判断按钮 执行相关方法
+			for (var i in this.onKeepKey) {
+				var val = this.onKeepKey[i];
+				if (val.on) {
+					var key = new Date() - val.time > 200 ? 1 : 0;
+					console.log(i, key == 0 ? '短按' : '长按', val.time, new Date() - val.time);
+					val.func(key); //0短按 1长按
+				}
+			};
+		}
+	}, {
+		key: 'clearCanavs',
 		value: function clearCanavs() {
 			this.ctx.ctx1.clearRect(0, 0, game.box.originWidth, game.box.originHeight);
 		}
 	}, {
-		key: "gameloop",
+		key: 'gameloop',
 		value: function gameloop() {
 			//画面循环
 			var _that = this;
@@ -166,7 +195,8 @@ var Game = function () {
 				}
 				_that.time.lastTime = now;
 				_that.clearCanavs();
-
+				//按键
+				_that.fn_loop_keyBoard();
 				//玩家player绘制
 				player._draw();
 			}
@@ -197,7 +227,7 @@ var LoadData = function () {
 	}
 
 	_createClass(LoadData, [{
-		key: "init",
+		key: 'init',
 		value: function init() {
 			var _this = this;
 
@@ -243,14 +273,14 @@ var LoadData = function () {
 					for (var src in _that.imagesUrl[arrName]) {
 						var _ret2 = _loop2(src);
 
-						if ((typeof _ret2 === "undefined" ? "undefined" : _typeof(_ret2)) === "object") return _ret2.v;
+						if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
 					}
 				};
 
 				for (var arrName in _that.imagesUrl) {
 					var _ret = _loop(arrName);
 
-					if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+					if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 				}
 			});
 		}
