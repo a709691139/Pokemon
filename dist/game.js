@@ -114,7 +114,7 @@ var Game = function () {
 				for (var i in _that.onKeepKey) {
 					var val = _that.onKeepKey[i];
 					if (val.keyCode == event.keyCode) {
-						//console.log('按下',i, !val.on?'触发':'不触发');
+						//console.log('按下',i, !val.on?'触发':'不触发',new Date - val.time, val.together);
 						if (!val.on) {
 							val.on = true;
 							val.together = false;
@@ -122,26 +122,13 @@ var Game = function () {
 							console.log('new Time');
 							break;
 						}
-
-						// let newTime = new Date();
-						// if(!val.on){
-						// 	val.time = newTime;
-						// 	val.on = true;
-						// 	continue;
-						// }
-						// if(newTime - val.time > 200  && val.on){ //按时间>200 和 不是第一次按 ,,- - 窝草，js连续按同一个键， 按下去触发keydown,第二次触发要等500ms;
-						// 	val.func('长按');	
-
-						// 	//val.time = newTime;
-						// 	console.log('长按',i);
-						// }	
-						// console.log(newTime - val.time);		
-					}
-					//暂时停止其他的同按，抬起时就回复其他的同按
-					if (val.on) {
-						val.on = false;
-						val.together = true;
-						!val.together && (val.together = true);
+					} else {
+						//暂时停止其他的同按，抬起时就回复其他的同按
+						if (val.on) {
+							val.on = false;
+							val.together = true;
+							!val.together && (val.together = true);
+						}
 					}
 				};
 			});
