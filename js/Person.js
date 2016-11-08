@@ -50,7 +50,9 @@ class Person {
 
   _moveStep(){//移动一步
     if(!this.isMoveing){ return false; }
-    //走路动画,300ms内走完
+    // 1、短按：方向不同 ? 就切换方向120ms完成 : 走一步
+
+    // 2、长按: 走一步 走路动画,300ms内走完
     let onceTime = 400;
     this.moveTime += game.time.deltaTime;
     let stepDistant = this.aspect.width; //一步距离
