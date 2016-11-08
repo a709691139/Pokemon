@@ -20,17 +20,19 @@ class Person {
         arr:0, //0走路 1跑 2车
         img:0, //方向图 0-2下  3-5右 6-8上 9-11左
         direct:0,  // 0下  1右 2上 3左 面朝方向
+        lastDirect:0, //上次方向
       }
     };
     this.isMoveing = false; //移动一步
     this.moveTime = 0;      //移动切换图片定时器
-    this.movedStepDistant = 0; //移动一步走过的距离
+    this.movedStepDistant = 0; //移动一步已经走过的距离
+    this.keyDownLength = 1; //按键的0短按：1长按
   }
 
   _draw(){  //绘制画面   
   }
 
-  _changePosition(direct,speed,distant){
+  _changePosition(direct,speed=0,distant=0){
     speed = (speed==0)?distant:speed;
     switch(direct){
       case 3:
@@ -50,20 +52,31 @@ class Person {
 
   _moveStep(){//移动一步
     if(!this.isMoveing){ return false; }
-    // 1、短按：方向不同 ? 就切换方向120ms完成 : 走一步
-
-    // 2、长按: 走一步 走路动画,300ms内走完
-    let onceTime = 400;
+    let onceTime = 0;
     this.moveTime += game.time.deltaTime;
-    let stepDistant = this.aspect.width; //一步距离
+    let index = 3 * this.images.currentIndex.direct; //图片index
+    let stepDistant = 0; //一步距离
+    let speed = 0; //移动速度
+    //console.log(this.keyDownLength, this.images.currentIndex.lastDirect,this.images.currentIndex.direct );
+    if( this.keyDownLength==0 && this.images.currentIndex.lastDirect!=this.images.currentIndex.direct ){
+      // 1、短按&方向不同   120ms完成  动画 1 2 0
+      onceTime = 120;
+      speed = 0;
+      stepDistant = 0;
+      //console.log('切换方向');
+    }else{
+      // 2、短按|长按: 走一步 走路动画,400ms内走完
+      onceTime = 400;
+      stepDistant = this.aspect.width;
+      speed = (stepDistant/onceTime) * game.time.deltaTime;
+      //console.log('走路');
+    }
     //移动
-    let speed = (stepDistant/onceTime) * game.time.deltaTime;
     this._changePosition(this.images.currentIndex.direct ,speed);
-    this.movedStepDistant += speed;
+    this.movedStepDistant += speed; 
 
-    //切换图
-    
-    let index = 3 * this.images.currentIndex.direct;
+    //切换图 
+    //
     if(this.moveTime > onceTime){
       //会有时间误差的，没到达最远距离，下面直接瞬移过去
       this.moveTime = 0;
@@ -73,24 +86,37 @@ class Person {
       //去到一步最大距离
       this._changePosition(this.images.currentIndex.direct ,0, (stepDistant - this.movedStepDistant));
       this.movedStepDistant = 0;
+      //上次方向改变
+      this.images.currentIndex.lastDirect = this.images.currentIndex.direct;
+      this.keyDownLength = 1;
+      console.log('走完||切换  结束');
       return false;
     }
+
     let add = 0;
     
-    
-    let imgIndex = Math.floor( this.moveTime / onceTime * 3 );
-    switch(imgIndex){
-      case 0:
-      add = 1;
-      break;
-      case 2:
-      add = 2;
-      break;
+    if(speed == 0){
+      if(this.moveTime < onceTime/2){
+        add = 1;
+      }else{
+        add = 0;
+      }
+    }else{
+      let imgIndex = Math.floor( this.moveTime / onceTime * 3 );
+      switch(imgIndex){
+        case 0:
+        add = 1;
+        break;
+        case 2:
+        add = 2;
+        break;
+      }
     }
-    //console.log(imgIndex,add);
+    
+    
     
     this.images.currentIndex.img = index + add;
-    
+    console.log(this.images.currentIndex.img);
 
     //console.log(this.moveTime , this.position.y);
     //console.log(this.moveTime, this.images.currentIndex.img);
@@ -101,40 +127,54 @@ class Person {
     let _that = this;
     return{
       left(key){ //key 0短按，1长按
-        //_that.position.x -=10;
-        //_that._changeImgIndex(3);
         if(!_that.isMoveing){
-          console.log();
+          
           _that.images.currentIndex.direct = 3;
           _that.isMoveing = true;
+          if(key==0){
+            _that.keyDownLength = 0;
+          }
+          console.log( key==0?'短按':'长按' );
         }
+        
       },
-      right(){
+      right(key){
        // _that.position.x +=10;
        // _that._changeImgIndex(1);
        
         if(!_that.isMoveing){
           _that.images.currentIndex.direct = 1;
           _that.isMoveing = true;
-
+          if(key==0){
+            _that.keyDownLength = 0;
+          }
+          console.log( key==0?'短按':'长按' );
         }
       },
-      up(){
+      up(key){
         //_that.position.y -=10;
         //_that._changeImgIndex(2);
         
         if(!_that.isMoveing){
           _that.images.currentIndex.direct = 2;
           _that.isMoveing = true;
+          if(key==0){
+            _that.keyDownLength = 0;
+          }
+          console.log( key==0?'短按':'长按' );
         }
       },
-      down(){
+      down(key){
         //_that.position.y +=10;
         //_that._changeImgIndex(0);
         
         if(!_that.isMoveing){
           _that.images.currentIndex.direct = 0;
           _that.isMoveing = true;
+          if(key==0){
+            _that.keyDownLength = 0;
+          }
+          console.log( key==0?'短按':'长按' );
         }
       }  
     }
@@ -159,6 +199,7 @@ class Player extends Person {
         arr:0, //0走路 1跑 2车
         img:0, //方向图 0-2下  3-5右 6-8上 9-11左
         direct:0,  // 0下  1右 2上 3左
+        lastDirect:0, //上次方向
       }
     };
     this.aspect = {  

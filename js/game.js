@@ -141,7 +141,7 @@ class Game {
 			let val = this.onKeepKey[i];
 			if( val.on ){
 				let key = new Date - val.time > 120 ? 1 : 0;
-				console.log( i , key==0?'短按':'长按' , val.time, new Date - val.time );
+				//console.log( i , key==0?'短按':'长按' , val.time, new Date - val.time );
 				val.func(key);//0短按 1长按
 			}
 		};
