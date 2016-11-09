@@ -14,9 +14,13 @@ class Game {
 			scaleX:1, //缩放比
 			scaleY:1,
 		};
-		this.ctx = {     //画布
-			canvas1 : '',
-			ctx1 : '',
+		this.canvas = {     //画布
+			elements : {
+				person:'',
+				background:'',
+				menu:''
+			},
+			ctx : {},
 		};
 		this.time = {    //时间
 			lastTime : 0,
@@ -82,9 +86,15 @@ class Game {
 	}
 
 	init_ctx(){
-		this.ctx.canvas1 = document.getElementById("canvas1");
-		this.ctx.ctx1 = this.ctx.canvas1.getContext("2d");
-		this.ctx.canvas1.style.transform = 'scale('+ game.box.scaleX +','+ game.box.scaleY +')';
+		this.canvas.elements = {
+			person: document.getElementById("canvas_person"),
+			background: document.getElementById("canvas_map"),
+			menu: document.getElementById("canvas_menu"),
+		};
+		for(let name in this.canvas.elements){
+			this.canvas.ctx[name] = this.canvas.elements[name].getContext("2d");
+			this.canvas.elements[name].style.transform = 'scale('+ game.box.scaleX +','+ game.box.scaleY +')';
+		}
 	}
 
 	init_keyBoard(){
@@ -105,7 +115,7 @@ class Game {
 						val.on = true; 
 						val.together = false;
 						val.time = new Date(); 
-						console.log('new Time');
+						//console.log('new Time');
 						break;
 					}
 				}else{
@@ -140,7 +150,7 @@ class Game {
 		for(let i in this.onKeepKey){
 			let val = this.onKeepKey[i];
 			if( val.on ){
-				let key = new Date - val.time > 120 ? 1 : 0;
+				let key = new Date - val.time > 200 ? 1 : 0;
 				//console.log( i , key==0?'短按':'长按' , val.time, new Date - val.time );
 				val.func(key);//0短按 1长按
 			}
@@ -148,7 +158,9 @@ class Game {
 	}
 
 	clearCanavs(){
-		this.ctx.ctx1.clearRect(0,0,game.box.originWidth, game.box.originHeight);
+		for(let name in this.canvas.ctx){
+			this.canvas.ctx[name].clearRect(0,0,game.box.originWidth, game.box.originHeight);
+		}
 	}
 
 	gameloop(){  //画面循环
@@ -161,11 +173,18 @@ class Game {
 				_that.time.deltaTime = 40;
 			}
 			_that.time.lastTime = now;
+			//清屏
 			_that.clearCanavs();
 			//按键
 			_that.fn_loop_keyBoard();
+			//绘制画面
+			this.canvas.ctx.person.save();
+			let x = player.position.x - (720-48)/2;
+			let y = player.position.y - (420-48)/2;
+			this.canvas.ctx.person.translate(-x,-y);
 			//玩家player绘制
 			player._draw();
+			this.canvas.ctx.person.restore();
 
 		}
 	}

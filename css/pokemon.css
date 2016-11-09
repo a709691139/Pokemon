@@ -7,5 +7,5 @@ label { -webkit-tap-highlight-color: transparent;  -webkit-appearance: none; /*å
 .btn{display:inline-block;width:100%;height:30px;border:none;border-radius:3px;background-color:rgba(0,102,179,.7);color:#fff;text-align:center;line-height:30px;cursor:pointer}
 .btn:hover{background-color:#0066b3;color:#fff;text-decoration:none}
 #box{ position:relative;overflow:hidden;margin:0 auto;max-width:720px;min-width:300px;height: 100%;}
-#canvas1{position:absolute;top:0;left:0;z-index:1;transform-origin: 0 0;}
+#box canvas{position:absolute;top:0;left:0;z-index:1;transform-origin: 0 0;}
 

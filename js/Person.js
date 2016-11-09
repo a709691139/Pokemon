@@ -59,8 +59,8 @@ class Person {
     let speed = 0; //移动速度
     //console.log(this.keyDownLength, this.images.currentIndex.lastDirect,this.images.currentIndex.direct );
     if( this.keyDownLength==0 && this.images.currentIndex.lastDirect!=this.images.currentIndex.direct ){
-      // 1、短按&方向不同   120ms完成  动画 1 2 0
-      onceTime = 120;
+      // 1、短按&方向不同   180ms完成  动画 1 2 0
+      onceTime = 200;
       speed = 0;
       stepDistant = 0;
       //console.log('切换方向');
@@ -89,7 +89,7 @@ class Person {
       //上次方向改变
       this.images.currentIndex.lastDirect = this.images.currentIndex.direct;
       this.keyDownLength = 1;
-      console.log('走完||切换  结束');
+      //console.log('走完||切换  结束');
       return false;
     }
 
@@ -116,10 +116,21 @@ class Person {
     
     
     this.images.currentIndex.img = index + add;
-    console.log(this.images.currentIndex.img);
+    //console.log(this.images.currentIndex.img);
 
     //console.log(this.moveTime , this.position.y);
     //console.log(this.moveTime, this.images.currentIndex.img);
+  }
+
+  _keyDownChangeDirection(key,direct){//key 0短按，1长按
+    if(!this.isMoveing){
+      this.images.currentIndex.direct = direct;
+      this.isMoveing = true;
+      if(key==0){
+        this.keyDownLength = 0;
+      }
+      console.log( key==0?'短按':'长按' );
+    }
   }
 
   _move(){  //人物移动
@@ -127,55 +138,16 @@ class Person {
     let _that = this;
     return{
       left(key){ //key 0短按，1长按
-        if(!_that.isMoveing){
-          
-          _that.images.currentIndex.direct = 3;
-          _that.isMoveing = true;
-          if(key==0){
-            _that.keyDownLength = 0;
-          }
-          console.log( key==0?'短按':'长按' );
-        }
-        
+        _that._keyDownChangeDirection(key,3);
       },
       right(key){
-       // _that.position.x +=10;
-       // _that._changeImgIndex(1);
-       
-        if(!_that.isMoveing){
-          _that.images.currentIndex.direct = 1;
-          _that.isMoveing = true;
-          if(key==0){
-            _that.keyDownLength = 0;
-          }
-          console.log( key==0?'短按':'长按' );
-        }
+        _that._keyDownChangeDirection(key,1);
       },
       up(key){
-        //_that.position.y -=10;
-        //_that._changeImgIndex(2);
-        
-        if(!_that.isMoveing){
-          _that.images.currentIndex.direct = 2;
-          _that.isMoveing = true;
-          if(key==0){
-            _that.keyDownLength = 0;
-          }
-          console.log( key==0?'短按':'长按' );
-        }
+        _that._keyDownChangeDirection(key,2);
       },
       down(key){
-        //_that.position.y +=10;
-        //_that._changeImgIndex(0);
-        
-        if(!_that.isMoveing){
-          _that.images.currentIndex.direct = 0;
-          _that.isMoveing = true;
-          if(key==0){
-            _that.keyDownLength = 0;
-          }
-          console.log( key==0?'短按':'长按' );
-        }
+        _that._keyDownChangeDirection(key,0);
       }  
     }
   }
@@ -189,19 +161,7 @@ class Player extends Person {
   constructor(name='未命名',sex='男',age=6) {
     super(name,sex);
     this.age = age;
-    this.images = {
-      url: 'images/playerGirl.png',
-      walk: [],
-      run: [], 
-      cycle:[], 
-      current: '',
-      currentIndex:{
-        arr:0, //0走路 1跑 2车
-        img:0, //方向图 0-2下  3-5右 6-8上 9-11左
-        direct:0,  // 0下  1右 2上 3左
-        lastDirect:0, //上次方向
-      }
-    };
+    this.images.url = 'images/playerGirl.png';
     this.aspect = {  
       width:16*3,
       height:18*3,
@@ -214,34 +174,11 @@ class Player extends Person {
 
   init(){
     this.images.current = loadData.imageObj.person.player;
-
-
-    // let _that = this;
-    // let Img = new Image();
-    // //console.log(ImgArray[x1][x2].src);
-    // Img.src = this.images.url;
-    // if(Img.complete){
-    //   //_that.images.current = Img;
-
-    //   _that._draw();
-    // }else{
-    //   Img.onload = function(){
-    //     _that.images.current = this;
-    //     //_that._draw();
-    //   };
-    // };  
   }
   _draw(){  //绘制画面
     if(game){
       this._moveStep();
-      game.ctx.ctx1.drawImage(this.images.current, (20+15)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
-
-      // for(let i=0;i<=12;i++){
-      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*0, 24, 26, this.position.x+this.aspect.width*i, this.position.y, this.aspect.width, this.aspect.height);
-      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*1, 24, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*1, this.aspect.width, this.aspect.height);
-      //   game.ctx.ctx1.drawImage(this.images.current, (20+14.5)*i, 26*2, 24, 26, this.position.x+this.aspect.width*i, this.position.y+this.aspect.height*2, this.aspect.width, this.aspect.height);
-      // }
+      game.canvas.ctx.person.drawImage(this.images.current, (20+15)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
     }
-    
   }
 }
