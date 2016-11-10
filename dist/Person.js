@@ -201,7 +201,11 @@ var Player = function (_Person) {
     _this.images.url = 'images/playerGirl.png';
     _this.aspect = {
       width: 16 * 3,
-      height: 18 * 3
+      height: 18 * 3,
+      alignDeviation: {
+        x: 6,
+        y: -6
+      }
     };
     _this.position = { //基本位置 
       x: 0,
@@ -221,7 +225,7 @@ var Player = function (_Person) {
       //绘制画面
       if (game) {
         this._moveStep();
-        game.canvas.ctx.person.drawImage(this.images.current, (20 + 15) * this.images.currentIndex.img, 26 * this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+        game.canvas.ctx.person.drawImage(this.images.current, (20 + 15) * this.images.currentIndex.img, 26 * this.images.currentIndex.arr, 24, 26, this.position.x + this.aspect.alignDeviation.x, this.position.y + this.aspect.alignDeviation.y, this.aspect.width, this.aspect.height);
       }
     }
   }]);

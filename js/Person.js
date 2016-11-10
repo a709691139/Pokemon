@@ -165,6 +165,10 @@ class Player extends Person {
     this.aspect = {  
       width:16*3,
       height:18*3,
+      alignDeviation:{
+        x:6,
+        y:-6,
+      }
     };
     this.position = { //基本位置 
       x:0,
@@ -178,7 +182,7 @@ class Player extends Person {
   _draw(){  //绘制画面
     if(game){
       this._moveStep();
-      game.canvas.ctx.person.drawImage(this.images.current, (20+15)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 24, 26, this.position.x, this.position.y, this.aspect.width, this.aspect.height);
+      game.canvas.ctx.person.drawImage(this.images.current, (20+15)*this.images.currentIndex.img, 26*this.images.currentIndex.arr, 24, 26, this.position.x+this.aspect.alignDeviation.x, this.position.y+this.aspect.alignDeviation.y, this.aspect.width, this.aspect.height);
     }
   }
 }

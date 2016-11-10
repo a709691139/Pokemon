@@ -199,12 +199,17 @@ var Game = function () {
 				_that.fn_loop_keyBoard();
 				//绘制画面
 				this.canvas.ctx.person.save();
+				this.canvas.ctx.background.save();
 				var x = player.position.x - (720 - 48) / 2;
 				var y = player.position.y - (420 - 48) / 2;
 				this.canvas.ctx.person.translate(-x, -y);
+				this.canvas.ctx.background.translate(-x, -y);
+				//地图绘制
+				map._draw();
 				//玩家player绘制
 				player._draw();
 				this.canvas.ctx.person.restore();
+				this.canvas.ctx.background.restore();
 			}
 		}
 	}]);
@@ -222,7 +227,9 @@ var LoadData = function () {
 			person: {
 				player: 'images/playerGirl.png'
 			},
-			map: {}
+			map: {
+				'm_001': 'images/mapElements01.dib'
+			}
 		};
 		this.imageObj = {
 			person: {
@@ -310,7 +317,11 @@ window.onload = function () {
 		window.game = game;
 		var player = new Player('赵日天', '男', '23');
 		window.player = player;
+		var map = new Map('m_001');
+		window.map = map;
+
 		player.init();
+		map.init();
 		game.init();
 	}
 
