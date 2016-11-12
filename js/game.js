@@ -167,12 +167,8 @@ class Game {
 		let _that = this;
 		window.requestAnimFrame(()=>{_that.gameloop()}); //跟随屏幕分辨率setInterval
 		if(_that.control){
-			var now = new Date();
-			_that.time.deltaTime = now - _that.time.lastTime;
-			if(_that.time.deltaTime > 40){
-				_that.time.deltaTime = 40;
-			}
-			_that.time.lastTime = now;
+			
+			
 			//清屏
 			_that.clearCanavs();
 			//按键
@@ -191,7 +187,12 @@ class Game {
 			this.canvas.ctx.person.restore();
 			this.canvas.ctx.background.restore();
 
-
+			var now = new Date();
+			_that.time.deltaTime = now - _that.time.lastTime;
+			if(_that.time.deltaTime > 40){
+				_that.time.deltaTime = 40;
+			}
+			_that.time.lastTime = now;
 		}
 	}
 }

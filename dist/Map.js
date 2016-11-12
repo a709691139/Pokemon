@@ -8,8 +8,8 @@ var mapList = {
   'm_001': {
     name: '初始图',
     imgUrl: 'images/mapElements01.dib',
-    widthNum: 60,
-    heightNum: 60
+    widthNum: 4,
+    heightNum: 4
   }
 };
 
@@ -36,11 +36,44 @@ var Map = function () {
       },
       elements: {
         'green_ground_01': {
+          name: '草地1',
           x: 16.5,
           y: 0,
           height: 15.5,
           width: 15,
           type: 'c'
+        },
+        'tree_01': {
+          name: '树块左上',
+          x: 6 * 16,
+          y: 3 * 16,
+          height: 16,
+          width: 16,
+          type: '1'
+        },
+        'tree_02': {
+          name: '树块右上',
+          x: 7 * 16,
+          y: 3 * 16,
+          height: 16,
+          width: 16,
+          type: '1'
+        },
+        'tree_03': {
+          name: '树块左下',
+          x: 6 * 16,
+          y: 4 * 16,
+          height: 16,
+          width: 16,
+          type: '1'
+        },
+        'tree_04': {
+          name: '树块右下',
+          x: 7 * 16,
+          y: 4 * 16,
+          height: 16,
+          width: 16,
+          type: '1'
         }
       }
     };
@@ -49,6 +82,7 @@ var Map = function () {
       current: ''
     };
     this.array = [];
+    this.outScreenArray = [['tree_01', 'tree_02'], ['tree_03', 'tree_04']];
   }
 
   _createClass(Map, [{
@@ -59,8 +93,7 @@ var Map = function () {
         this.array[i] = [];
         for (var j = 0; j < this.block.nums.x; j++) {
           this.array[i][j] = {
-            id: 'g_1',
-            name: 'green_ground_01',
+            id: 'green_ground_01',
             type: 'c'
           };
         }
@@ -79,12 +112,53 @@ var Map = function () {
             elements = _block.elements,
             array = this.array,
             canvas = game.canvas.ctx.background;
-
-
-        for (var i = 0; i < this.block.nums.y; i++) {
-          for (var j = 0; j < this.block.nums.x; j++) {
-            var element = elements[array[i][j].name];
-            canvas.drawImage(img, element.x, element.y, element.width, element.height, blockWidth * j, blockHeight * i, blockWidth, blockHeight);
+        //地图外的自动覆盖 2*2方格覆盖，如大树，
+        //上 
+        for (var i = -8; i <= -1; i++) {
+          for (var j = -8; j <= 8 + this.block.nums.x + 8 - 1; j++) {
+            var rowX = Math.abs(i % 2);
+            var rowY = Math.abs(j % 2);
+            var element = elements[this.outScreenArray[rowX][rowY]];
+            // console.log(rowX,rowY);
+            canvas.drawImage(img, element.x, element.y, 16, 16, blockWidth * j, blockHeight * i, blockWidth, blockHeight);
+          }
+        }
+        //下 
+        for (var _i = this.block.nums.y; _i <= this.block.nums.y + 8; _i++) {
+          for (var _j = -8; _j <= 8 + this.block.nums.x + 8 - 1; _j++) {
+            var _rowX = Math.abs(_i % 2);
+            var _rowY = Math.abs(_j % 2);
+            var _element = elements[this.outScreenArray[_rowX][_rowY]];
+            // console.log(rowX,rowY);
+            canvas.drawImage(img, _element.x, _element.y, 16, 16, blockWidth * _j, blockHeight * _i, blockWidth, blockHeight);
+          }
+        }
+        //左
+        // 
+        for (var _i2 = 0; _i2 <= this.block.nums.y - 1; _i2++) {
+          for (var _j2 = -8; _j2 <= -1; _j2++) {
+            var _rowX2 = Math.abs(_i2 % 2);
+            var _rowY2 = Math.abs(_j2 % 2);
+            var _element2 = elements[this.outScreenArray[_rowX2][_rowY2]];
+            // console.log(rowX,rowY);
+            canvas.drawImage(img, _element2.x, _element2.y, 16, 16, blockWidth * _j2, blockHeight * _i2, blockWidth, blockHeight);
+          }
+        }
+        //右 
+        for (var _i3 = 0; _i3 <= this.block.nums.y - 1; _i3++) {
+          for (var _j3 = this.block.nums.x - 1; _j3 <= 8 + this.block.nums.x + 8 - 1; _j3++) {
+            var _rowX3 = Math.abs(_i3 % 2);
+            var _rowY3 = Math.abs(_j3 % 2);
+            var _element3 = elements[this.outScreenArray[_rowX3][_rowY3]];
+            // console.log(rowX,rowY);
+            canvas.drawImage(img, _element3.x, _element3.y, 16, 16, blockWidth * _j3, blockHeight * _i3, blockWidth, blockHeight);
+          }
+        }
+        //地图内	
+        for (var _i4 = 0; _i4 < this.block.nums.y; _i4++) {
+          for (var _j4 = 0; _j4 < this.block.nums.x; _j4++) {
+            var _element4 = elements[array[_i4][_j4].id];
+            canvas.drawImage(img, _element4.x, _element4.y, _element4.width, _element4.height, blockWidth * _j4, blockHeight * _i4, blockWidth, blockHeight);
           }
         }
       }

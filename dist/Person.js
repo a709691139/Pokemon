@@ -16,7 +16,9 @@ var Person = function () {
     this.sex = sex;
     this.position = { //基本位置 
       x: 0,
-      y: 0
+      y: 0,
+      x_index: 1,
+      y_index: 2
     };
     this.aspect = { //人物宽高
       width: 0,
@@ -73,13 +75,14 @@ var Person = function () {
       if (!this.isMoveing) {
         return false;
       }
+
       var onceTime = 0;
-      this.moveTime += game.time.deltaTime;
-      var index = 3 * this.images.currentIndex.direct; //图片index
+      var direct = this.images.currentIndex.direct; //当前方向
+      var index = 3 * direct; //图片index
       var stepDistant = 0; //一步距离
       var speed = 0; //移动速度
-      //console.log(this.keyDownLength, this.images.currentIndex.lastDirect,this.images.currentIndex.direct );
-      if (this.keyDownLength == 0 && this.images.currentIndex.lastDirect != this.images.currentIndex.direct) {
+      //console.log(this.keyDownLength, this.images.currentIndex.lastDirect,direct );
+      if (this.keyDownLength == 0 && this.images.currentIndex.lastDirect != direct) {
         // 1、短按&方向不同   180ms完成  动画 1 2 0
         onceTime = 200;
         speed = 0;
@@ -91,11 +94,41 @@ var Person = function () {
         stepDistant = this.aspect.width;
         speed = stepDistant / onceTime * game.time.deltaTime;
         //console.log('走路');
+        //位置index更新
+        if (this.moveTime == 0) {
+          var x_index = this.position.x_index,
+              y_index = this.position.y_index;
+          switch (direct) {
+            case 3:
+              x_index--;
+              break;
+            case 1:
+              x_index++;
+              break;
+            case 2:
+              y_index--;
+              break;
+            case 0:
+              y_index++;
+              break;
+          }
+          //console.log('下一步位置',x_index,y_index)
+          //判断下一步的位置是否可以进入
+          if (x_index < 0 || x_index >= map.block.nums.x || y_index < 0 || y_index >= map.block.nums.y) {
+            //超出地图
+            //console.log('超出地图');
+            this.isMoveing = false;
+            return false;
+          } else {
+            this.position.x_index = x_index;
+            this.position.y_index = y_index;
+          }
+        }
       }
       //移动
-      this._changePosition(this.images.currentIndex.direct, speed);
+      this._changePosition(direct, speed);
       this.movedStepDistant += speed;
-
+      this.moveTime += game.time.deltaTime;
       //切换图 
       //
       if (this.moveTime > onceTime) {
@@ -105,10 +138,10 @@ var Person = function () {
         this.images.currentIndex.img = index;
         this.isMoveing = false;
         //去到一步最大距离
-        this._changePosition(this.images.currentIndex.direct, 0, stepDistant - this.movedStepDistant);
+        this._changePosition(direct, 0, stepDistant - this.movedStepDistant);
         this.movedStepDistant = 0;
         //上次方向改变
-        this.images.currentIndex.lastDirect = this.images.currentIndex.direct;
+        this.images.currentIndex.lastDirect = direct;
         this.keyDownLength = 1;
         //console.log('走完||切换  结束');
         return false;
@@ -135,6 +168,7 @@ var Person = function () {
       }
 
       this.images.currentIndex.img = index + add;
+
       //console.log(this.images.currentIndex.img);
 
       //console.log(this.moveTime , this.position.y);
@@ -150,7 +184,7 @@ var Person = function () {
         if (key == 0) {
           this.keyDownLength = 0;
         }
-        console.log(key == 0 ? '短按' : '长按');
+        //console.log( key==0?'短按':'长按' );
       }
     }
   }, {
@@ -209,7 +243,9 @@ var Player = function (_Person) {
     };
     _this.position = { //基本位置 
       x: 0,
-      y: 0
+      y: 0,
+      x_index: 1,
+      y_index: 2
     };
     return _this;
   }
@@ -218,6 +254,11 @@ var Player = function (_Person) {
     key: 'init',
     value: function init() {
       this.images.current = loadData.imageObj.person.player;
+      this.position.x = this.position.x_index * 48;
+      this.position.y = this.position.y_index * 48;
+      var _map$block$nums = map.block.nums,
+          numsX = _map$block$nums.x,
+          numsY = _map$block$nums.y;
     }
   }, {
     key: '_draw',
