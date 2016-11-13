@@ -54,7 +54,7 @@ class Person {
 
   _moveStep(){//移动一步
     if(!this.isMoveing){ return false; }
-    
+
     let onceTime = 0;
     let direct =  this.images.currentIndex.direct;//当前方向
     let index = 3 * direct; //图片index
@@ -108,6 +108,7 @@ class Person {
     //移动
     this._changePosition(direct ,speed);
     this.movedStepDistant += speed; 
+    
     this.moveTime += game.time.deltaTime;
     //切换图 
     //

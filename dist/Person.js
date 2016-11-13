@@ -128,6 +128,7 @@ var Person = function () {
       //移动
       this._changePosition(direct, speed);
       this.movedStepDistant += speed;
+
       this.moveTime += game.time.deltaTime;
       //切换图 
       //
