@@ -130,3 +130,28 @@ People:{
 
 2016/11/12
 1、 长按移动人物，有个显示bug，蛋疼， 走完一步那个瞬间位置震撼了一下，  短按一步步走没事 : 是 走一步中的 +deltatime 顺序问题
+
+2016/11/12
+1、优化地图对象， 地图外的格子， 全部用json (-8 ~ nums.x+8)显示， array不行，自动忽略负数。
+2、待完成： 地图编辑器，用div+jq，用php编辑文件
+	填充 {
+		name: 
+		imgUrl:'',
+		widthNum:4,
+		heightNum:4,
+		elements:{
+  			'green_ground_01':{
+  				name:'草地1',
+  				x:16.5,
+  				y:0,
+  				height:15.5,
+  				width:15,
+  				type:'c',
+  			}
+  		},
+  		outScreenArray: [ 
+	  		['tree_01','tree_02'],
+	  		['tree_03','tree_04']
+	  	],
+	}
+	后期添加： 事件，其他人物，物品 。。。背景地图的动画

@@ -112,11 +112,15 @@ var Person = function () {
               y_index++;
               break;
           }
-          //console.log('下一步位置',x_index,y_index)
+
           //判断下一步的位置是否可以进入
-          if (x_index < 0 || x_index >= map.block.nums.x || y_index < 0 || y_index >= map.block.nums.y) {
-            //超出地图
-            //console.log('超出地图');
+          var nextArrayBlock = map.array[y_index][x_index];
+          var nextBlock = map.block.elements[nextArrayBlock.id];
+          nextArrayBlock.type && (nextBlock.type = nextArrayBlock.type);
+          nextBlock.id = nextArrayBlock.id;
+          //console.log('下一步位置',x_index,y_index,nextBlock);
+          if (nextBlock.type == 1) {
+            ;
             this.isMoveing = false;
             return false;
           } else {
