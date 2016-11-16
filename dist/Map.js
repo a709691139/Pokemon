@@ -13,46 +13,34 @@ var mapList = {
     elements: {
       'green_ground_01': {
         name: '草地1',
-        x: 16.5,
-        y: 0,
-        height: 15.5,
-        width: 15,
-        type: 'c'
+        x: 1,
+        y: 0
       },
       'tree_01': {
         name: '树块左上',
-        x: 6 * 16,
-        y: 3 * 16,
-        height: 16,
-        width: 16,
-        type: '1'
+        x: 6,
+        y: 3
       },
       'tree_02': {
         name: '树块右上',
-        x: 7 * 16,
-        y: 3 * 16,
-        height: 16,
-        width: 16,
-        type: '1'
+        x: 7,
+        y: 3
       },
       'tree_03': {
         name: '树块左下',
-        x: 6 * 16,
-        y: 4 * 16,
-        height: 16,
-        width: 16,
-        type: '1'
+        x: 6,
+        y: 4
       },
       'tree_04': {
         name: '树块右下',
-        x: 7 * 16,
-        y: 4 * 16,
-        height: 16,
-        width: 16,
-        type: '1'
+        x: 7,
+        y: 4
       }
     },
-    outScreenArray: [['tree_01', 'tree_02'], ['tree_03', 'tree_04']]
+    elements_num_x: 8,
+    elements_num_y: 128,
+    outScreenArray: [['tree_01', 'tree_02'], ['tree_03', 'tree_04']],
+    array: { "0": { "0": { "id": "green_ground_01", "type": "c" }, "1": { "id": "green_ground_01", "type": "c" }, "2": { "id": "green_ground_01", "type": "c" }, "3": { "id": "green_ground_01", "type": "c" } }, "1": { "0": { "id": "green_ground_01", "type": "c" }, "1": { "id": "green_ground_01", "type": "c" }, "2": { "id": "green_ground_01", "type": "c" }, "3": { "id": "green_ground_01", "type": "c" } }, "2": { "0": { "id": "green_ground_01", "type": "c" }, "1": { "id": "green_ground_01", "type": "c" }, "2": { "id": "green_ground_01", "type": "c" }, "3": { "id": "green_ground_01", "type": "c" } }, "3": { "0": { "id": "green_ground_01", "type": "c" }, "1": { "id": "green_ground_01", "type": "c" }, "2": { "id": "green_ground_01", "type": "c" }, "3": { "id": "green_ground_01", "type": "c" } } }
   }
 };
 
@@ -69,7 +57,8 @@ var Map = function () {
         heightNum = _window$mapList$id$he === undefined ? 1 : _window$mapList$id$he,
         imgUrl = _window$mapList$id.imgUrl,
         elements = _window$mapList$id.elements,
-        outScreenArray = _window$mapList$id.outScreenArray;
+        outScreenArray = _window$mapList$id.outScreenArray,
+        array = _window$mapList$id.array;
 
     this.name = name;
     this.block = {
@@ -85,7 +74,7 @@ var Map = function () {
       url: imgUrl,
       current: ''
     };
-    this.array = {}; //地图每个方格 {id:xx,type:1}
+    this.array = array; //地图每个方格 {id:xx,type:1}
     this.outScreenArray = outScreenArray;
   }
 
@@ -93,15 +82,16 @@ var Map = function () {
     key: 'init',
     value: function init() {
       this.images.current = loadData.imageObj.map[this.id];
+      var array = {};
       //地图外
       for (var i = -8; i < this.block.nums.y + 8; i++) {
-        this.array[i] = {};
+        array[i] = {};
         for (var j = -8; j < this.block.nums.x + 8; j++) {
           // if(i>=0&&i<this.block.nums.y && j>=0&&j<this.block.nums.x){console.log(i,j);continue;}
           var rowX = Math.abs(i % 2).toString();
           var rowY = Math.abs(j % 2).toString();
           var elementName = this.outScreenArray[rowX][rowY];
-          this.array[i][j] = {
+          array[i][j] = {
             id: elementName,
             type: '1'
           };
@@ -109,14 +99,12 @@ var Map = function () {
       }
       //console.log(this.array);
       //地图内
-      for (var _i = 0; _i < this.block.nums.y; _i++) {
-        for (var _j = 0; _j < this.block.nums.x; _j++) {
-          this.array[_i][_j] = {
-            id: 'green_ground_01',
-            type: 'c'
-          };
+      for (var _i in this.array) {
+        for (var _j in this.array[_i]) {
+          array[_i][_j] = this.array[_i][_j];
         }
       }
+      this.array = array;
       console.log('地图对象array', this.array);
     }
   }, {
@@ -138,7 +126,7 @@ var Map = function () {
             // console.log(i,j);
             // console.log(array[i][j].id)
             var element = elements[array[i][j].id];
-            canvas.drawImage(img, element.x, element.y, element.width, element.height, blockWidth * j, blockHeight * i, blockWidth, blockHeight);
+            canvas.drawImage(img, element.x * 16, element.y * 16, 16, 16, blockWidth * j, blockHeight * i, blockWidth, blockHeight);
           }
         }
       }

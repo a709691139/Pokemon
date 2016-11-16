@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html manifest="game.appcache">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>口袋妖怪</title>
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit" />
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true" />
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320" />
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait" />
+<!-- QQ强制竖屏 -->
+<meta name="x5-orientation" content="portrait" />
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes"  />
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true" />
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application" />
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app" />
+<!-- 网站开启对 web app 程序的支持 -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<!-- 顶部状态条为黑色 -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<!-- 忽略页面中的数字识别和邮件识别 -->
+<meta name="format-detection" content="telephone=no,email=no" />
+<!-- 缩放设置 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<link rel="icon" type="image/gif" href="images/icon_pokemon.jpg" >
+<link href="css/pokemon.css" rel="stylesheet"  />
+<style>
+	body{background-color: #fff;}
+	#map{
+		width: 1000px;
+		height:700px;
+		overflow:scroll;
+		border:1px solid #000;
+		float:left;
+	}
+	#map div{}
+	#elements{
+		float:left;
+		width:500px;
+		height:700px;
+		border:1px solid #000;
+		float:left;
+		overflow:scroll;
+		margin-left: 50px;
+		position: relative;
+	}
+	#elements .block{
+		width: 48px;
+		height: 48px;
+		border: 1px solid red;
+		position: absolute;
+		top:0;
+		left:0;
+	}
+	#outScreenArray{
+		float:left;
+		width:200px;
+		height:200px;
+		border:1px solid #000;
+		float:left;
+		margin-left: 50px;
+	}
+	#mapList{
+		float:left;
+		margin-left: 50px;
+		margin-top: 50px;
+	}
+	#mapList select{
+		width:200px;
+		height:30px;
+	}
+</style>
+</head>
+<body ondragstart="return false" onselectstart="return false" >
+<!--oncontextmenu="return false" -->
+	<div id='map'>
+		
+	</div>
+	
+	<div id="elements">
+		<img src='' />
+		<div class="block"></div>
+	</div>
+	<div id="outScreenArray">
+		
+	</div>
+	<div id="mapList">
+		<select class='selectMap'></select>
+	</div>
+</body>
+<!--基础库和函数-->
+<script src="lib/jquery-1.9.0.min.js"></script>
+<script src="dist/Map.js"></script>
+<script src="dist/mapEditPage.js"></script>
+</html>

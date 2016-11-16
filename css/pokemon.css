@@ -1,4 +1,5 @@
 @charset "UTF-8";body,div,dl,p,ul{margin:0;padding:0}
+*{box-sizing: border-box;-webkit-box-sizing: border-box; -moz-box-sizing: border-box;}
 body,html{background-color:#000;width:100%;height:100%;font-size:16px;font-family:"Microsoft Yahei",Arial;-moz-user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overflow: hidden;}
 a{text-decoration:none}
 ul{list-style:none}
