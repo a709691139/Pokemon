@@ -36,17 +36,28 @@
 <link href="css/pokemon.css" rel="stylesheet"  />
 <style>
 	body{background-color: #fff;}
-	#map{
+	#mapBox{
 		width: 1000px;
 		height:700px;
 		overflow:scroll;
 		border:1px solid #000;
 		float:left;
 	}
-	#map div{}
+	#mapBox .map{
+		width: 550px;
+		height:550px;
+		background-color: #bbb;
+		border:2px solid #000;
+	}
+	#mapBox .map div{
+		width: 48px;
+		height:48px;
+		position: absolute;
+		background-color: blue;
+	}
 	#elements{
 		float:left;
-		width:500px;
+		
 		height:700px;
 		border:1px solid #000;
 		float:left;
@@ -57,7 +68,7 @@
 	#elements .block{
 		width: 48px;
 		height: 48px;
-		border: 1px solid red;
+		border: 3px solid red;
 		position: absolute;
 		top:0;
 		left:0;
@@ -83,8 +94,9 @@
 </head>
 <body ondragstart="return false" onselectstart="return false" >
 <!--oncontextmenu="return false" -->
-	<div id='map'>
-		
+	<div id='mapBox'>
+		<div class="map">
+		</div>
 	</div>
 	
 	<div id="elements">
