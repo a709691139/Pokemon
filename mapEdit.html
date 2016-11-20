@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>口袋妖怪</title>
+<title>口袋妖怪--地图编辑器</title>
 <!-- 启用360浏览器的极速模式(webkit) -->
 <meta name="renderer" content="webkit" />
 <!-- 避免IE使用兼容模式 -->
@@ -33,67 +33,24 @@
 <!-- 缩放设置 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <link rel="icon" type="image/gif" href="images/icon_pokemon.jpg" >
-<link href="css/pokemon.css" rel="stylesheet"  />
-<style>
-	body{background-color: #fff;}
-	#mapBox{
-		width: 1000px;
-		height:700px;
-		overflow:scroll;
-		border:1px solid #000;
-		float:left;
-	}
-	#mapBox .map{
-		width: 550px;
-		height:550px;
-		background-color: #bbb;
-		border:2px solid #000;
-	}
-	#mapBox .map div{
-		width: 48px;
-		height:48px;
-		position: absolute;
-		background-color: blue;
-	}
-	#elements{
-		float:left;
-		
-		height:700px;
-		border:1px solid #000;
-		float:left;
-		overflow:scroll;
-		margin-left: 50px;
-		position: relative;
-	}
-	#elements .block{
-		width: 48px;
-		height: 48px;
-		border: 3px solid red;
-		position: absolute;
-		top:0;
-		left:0;
-	}
-	#outScreenArray{
-		float:left;
-		width:200px;
-		height:200px;
-		border:1px solid #000;
-		float:left;
-		margin-left: 50px;
-	}
-	#mapList{
-		float:left;
-		margin-left: 50px;
-		margin-top: 50px;
-	}
-	#mapList select{
-		width:200px;
-		height:30px;
-	}
-</style>
+<link href="css/mapEdit.css" rel="stylesheet"  />
+
 </head>
 <body ondragstart="return false" onselectstart="return false" >
 <!--oncontextmenu="return false" -->
+	<div class="header">
+		<div id="mapList">
+			<p>地图名:</p>
+			<select class='selectMap'></select>
+		</div>
+		<div class="radioBox">
+			<label><input name='radioType' type="radio" value='地图' checked />地图</label>
+			<label><input name='radioType' type="radio" value='运动许可' />运动许可</label>
+			<label><input name='radioType' type="radio" value='事件' />事件</label>
+			<label><input name='radioType' type="radio" value='野生精灵' />野生精灵</label>
+			<label><input name='radioType' type="radio" value='地图信息' />地图信息</label>
+		</div>
+	</div>
 	<div id='mapBox'>
 		<div class="map">
 		</div>
@@ -106,9 +63,19 @@
 	<div id="outScreenArray">
 		
 	</div>
-	<div id="mapList">
-		<select class='selectMap'></select>
+	<div id='selectMoveTypeBox'>
+		运动许可
+		<select class='selectMoveType'>
+			<option value="1">1</option>
+			<option value="c">c</option>
+		</select>
 	</div>
+	<div id="mapLength" class='clearfix'>
+		<span>每行</span><input class='input_x' placeholder='行' type="text"><span>个，</span>
+		<span>每列</span><input class='input_y' placeholder='列'  type="text"><span>个</span>
+		<button>确定</button>
+	</div>
+	
 </body>
 <!--基础库和函数-->
 <script src="lib/jquery-1.9.0.min.js"></script>

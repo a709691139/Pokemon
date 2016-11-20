@@ -1,0 +1,157 @@
+@charset "UTF-8";
+/*common start*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td { padding:0;margin:0; }
+fieldset, img { border:none;}
+table { border-collapse:collapse;border-spacing:0;}
+ol,ul,li{ list-style: none;list-style-type:none;}
+address,caption,cite,code,dfn,th,var { font-weight: normal; font-style: normal; }     
+caption,th { text-align: left; }   
+h1,h2,h3,h4,h5,h6 { font-weight: normal; font-size: 100%;}   
+q:before,q:after {content:''; }   
+abbr,acronym { border: 0}
+a{ color:#5f5f5f; text-decoration:none;}
+a:hover{ color:#fe0000; text-decoration:none}
+body{    font-family:'Microsoft Yahei',"STHeiti Light [STXihei]",Arial, Helvetica, sans-serif; *font-family:Arial, Helvetica, sans-serif;}
+html, body {
+    position: relative;
+    height: 100%;
+}
+*{webkit-transform: translateZ(0);-moz-transform: translateZ(0);-ms-transform: translateZ(0);-o-transform: translateZ(0);transform: translateZ(0);}
+*{    -webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;}
+section, article, aside, header, footer, nav, dialog, figure{display:block}
+
+.clearfix:after{content:"."; display:block; height:0; clear:both; visibility:hidden;}
+.clearfix{display:inline-block;}
+* html .clearfix{height:1%;}
+.clearfix{display:block;}
+.clear{clear:both; height:0; font:0/0 Arial; visibility:hidden;}
+
+body{
+	background-color: #fff;
+	&.mode_pic{
+		#outScreenArray,#elements{
+			position:relative;
+			left:0;
+			top:0;
+		}
+	}
+	&.mode_moveType{
+		#mapBox{
+			.block{
+				div{
+					background-color: rgba(255,255,255,.3);
+					color:#000;
+				}
+			}
+		}
+		#selectMoveTypeBox{
+			position:relative;
+			left:0;
+			top:0;
+		}
+	}
+}
+.header{
+	width:100%;
+	height:50px;
+	padding-left:15px;
+	margin-top:15px;
+}
+#mapList{
+	float:left;
+	margin-right: 25px;
+	p{
+		float:left;
+	}
+	select{
+		width:100px;
+		height:30px;
+	}
+}
+
+#mapBox{
+	width: 1000px;
+	height:700px;
+	overflow:scroll;
+	border:1px solid #000;
+	float:left;
+	.map{
+		width: 550px;
+		height:550px;
+		background-color: #bbb;
+		border:2px solid #000;
+		position: relative;
+		.block{
+			width: 48px;
+			height:48px;
+			position: absolute;
+			background-color: blue;
+			text-align: center;
+			font-size: 25px;
+			line-height: 48px;
+			color:transparent;
+		}
+	}
+}
+#elements{
+	float:left;
+	height:700px;
+	border:1px solid #000;
+	float:left;
+	overflow:scroll;
+	margin-left: 50px;
+	position: relative;
+	position:absolute;
+	left:-9999px;
+	top:9999px;
+	.block{
+		width: 48px;
+		height: 48px;
+		border: 3px solid red;
+		position: absolute;
+		top:0;
+		left:0;
+	}
+}
+#outScreenArray{
+	float:left;
+	width:200px;
+	height:200px;
+	border:1px solid #000;
+	float:left;
+	margin-left: 50px;
+	position:absolute;
+	left:-9999px;
+	top:9999px;
+	div{
+		width: 48px;
+		height:48px;
+		position: absolute;
+		background-color: blue;
+	}	
+}
+#mapLength{
+	float:left;
+	width:200px;
+	margin-left: 50px;
+	margin-top: 50px;
+	input{
+		float:left;
+		width: 40px;
+	}
+	span{
+		float:left;
+	}
+}
+
+#selectMoveTypeBox{
+	position:absolute;
+	left:-9999px;
+	top:9999px;
+	float:left;
+	margin-left: 50px;
+	margin-top: 50px;
+	select{
+		width:50px;
+	}
+}

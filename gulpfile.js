@@ -17,8 +17,8 @@ var gulp = require('gulp'),
   concat = require('gulp-concat'),
   rename = require('gulp-rename'),
   jshint = require('gulp-jshint'),
-  uglify = require('gulp-uglify');
-
+  uglify = require('gulp-uglify'),
+  less = require('gulp-less');
 
 // Load plugins
 var $ = require('gulp-load-plugins')();
@@ -33,6 +33,17 @@ gulp.task('es6', function() {
     }))
     .pipe(gulp.dest('dist/'));
 });
+
+ 
+gulp.task('less', function () {
+    gulp.src(['less/*.less'])
+        .pipe(less())
+        .pipe(gulp.dest('css'));
+});
+ 
+
+
 gulp.task('watch', ['es6'], function() {
   gulp.watch(['js/*.js'], ['es6']);
+  gulp.watch('less/*.less', ['less']);
 });
