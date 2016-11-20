@@ -7,8 +7,20 @@ $(function () {
 			this.mapWidthHeightLength._init();
 			this.radioType._init();
 			this.mapMoveType._init();
+			this.save._init();
 		},
-		_save: function _save() {},
+		save: {
+			element: {},
+			_init: function _init() {
+				this.element = $('.header button.save');
+				this.element.off('click');
+				this.element.on('click', EditObj.save._click);
+			},
+			_click: function _click() {
+				console.log(JSON.stringify(EditObj.selectedMapObj));
+			}
+		},
+
 		radioType: { //切换 地图、运动许可、事件、野生精灵、信息 编辑框
 			check: '地图',
 			elements: {},

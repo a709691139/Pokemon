@@ -156,6 +156,11 @@ body.mode_moveType #selectMoveTypeBox {
   padding-left: 15px;
   margin-top: 15px;
 }
+.header .save,
+.header .radioBox {
+  float: left;
+  margin-right: 20px;
+}
 #mapList {
   float: left;
   margin-right: 25px;
