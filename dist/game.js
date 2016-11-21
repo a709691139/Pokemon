@@ -35,42 +35,6 @@ var Game = function () {
 		this.time = { //时间
 			lastTime: 0,
 			deltaTime: 0 };
-		this.onKeepKey = { //当前正在按的按键
-			left: {
-				keyCode: 37,
-				time: 0,
-				func: '',
-				on: false,
-				together: false
-			},
-			right: {
-				keyCode: 39,
-				time: 0,
-				func: '',
-				on: false,
-				together: false
-			},
-			up: {
-				keyCode: 38,
-				time: 0,
-				func: '',
-				on: false,
-				together: false
-			},
-			down: {
-				keyCode: 40,
-				time: 0,
-				func: '',
-				on: false
-			},
-			enter: {
-				keyCode: 13,
-				time: 0,
-				func: '',
-				on: false,
-				together: false
-			}
-		};
 	}
 
 	_createClass(Game, [{
@@ -80,9 +44,6 @@ var Game = function () {
 			game.init_box();
 			game.init_ctx();
 			//加载资源
-
-			//键盘鼠标初始化
-			this.init_keyBoard();
 
 			//读取存储数据？ 关卡数据
 			this.gameloop();
@@ -110,68 +71,6 @@ var Game = function () {
 			}
 		}
 	}, {
-		key: 'init_keyBoard',
-		value: function init_keyBoard() {
-			this.onKeepKey.left.func = player._move().left;
-			this.onKeepKey.right.func = player._move().right;
-			this.onKeepKey.up.func = player._move().up;
-			this.onKeepKey.down.func = player._move().down;
-			this.onKeepKey.enter.func = player._join;
-			var _that = this;
-			var Time = 0;
-			//keydown记录按下的键，keyup取消，
-			$(document).keydown(function (event) {
-				for (var i in _that.onKeepKey) {
-					var val = _that.onKeepKey[i];
-					if (val.keyCode == event.keyCode) {
-						//console.log('按下',i, !val.on?'触发':'不触发',new Date - val.time, val.together);
-						if (!val.on) {
-							val.on = true;
-							val.together = false;
-							val.time = new Date();
-							//console.log('new Time');
-							break;
-						}
-					} else {
-						//暂时停止其他的同按，抬起时就回复其他的同按
-						if (val.on) {
-							val.on = false;
-							val.together = true;
-							!val.together && (val.together = true);
-						}
-					}
-				};
-			});
-			$(document).keyup(function (event) {
-				for (var i in _that.onKeepKey) {
-					var val = _that.onKeepKey[i];
-					if (val.keyCode == event.keyCode) {
-						//console.log('抬起',i);
-						val.on = false;
-						val.together = false;
-						break;
-					}
-					if (val.together && !val.on) {
-						val.together = false;
-						val.on = true;
-					}
-				};
-			});
-		}
-	}, {
-		key: 'fn_loop_keyBoard',
-		value: function fn_loop_keyBoard() {
-			//判断按钮 执行相关方法
-			for (var i in this.onKeepKey) {
-				var val = this.onKeepKey[i];
-				if (val.on) {
-					var key = new Date() - val.time > 200 ? 1 : 0;
-					//console.log( i , key==0?'短按':'长按' , val.time, new Date - val.time );
-					val.func(key); //0短按 1长按
-				}
-			};
-		}
-	}, {
 		key: 'clearCanavs',
 		value: function clearCanavs() {
 			for (var name in this.canvas.ctx) {
@@ -186,12 +85,13 @@ var Game = function () {
 			window.requestAnimFrame(function () {
 				_that.gameloop();
 			}); //跟随屏幕分辨率setInterval
+			//按键
+			keyboard._loop_keyBoard();
 			if (_that.control) {
 
 				//清屏
 				_that.clearCanavs();
-				//按键
-				_that.fn_loop_keyBoard();
+
 				//绘制画面
 				this.canvas.ctx.person.save();
 				this.canvas.ctx.background.save();
@@ -231,13 +131,17 @@ var LoadData = function () {
 			},
 			map: {
 				'm_001': 'images/mapElements01.dib'
+			},
+			border: {
+				'all': 'images/menuframes.png'
 			}
 		};
 		this.imageObj = {
 			person: {
 				player: ''
 			},
-			map: {}
+			map: {},
+			border: {}
 		};
 	}
 
@@ -321,9 +225,15 @@ window.onload = function () {
 		window.player = player;
 		var map = new Map('m_001');
 		window.map = map;
+		var menu = new Menu();
+		window.menu = menu;
+		var keyboard = new Keyboard();
+		window.keyboard = keyboard;
 
 		player.init();
 		map.init();
+		menu.init();
+		keyboard.init();
 		game.init();
 	}
 
