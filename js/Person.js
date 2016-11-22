@@ -34,6 +34,23 @@ class Person {
   _draw(){  //绘制画面   
   }
 
+  _onKey(key, keyTime){ //按键处理
+    switch(key){
+      case 'left':
+      this._keyDownChangeDirection(keyTime,3);
+      break;
+      case 'right':
+      this._keyDownChangeDirection(keyTime,1);
+      break;
+      case 'up':
+      this._keyDownChangeDirection(keyTime,2);
+      break;
+      case 'down':
+      this._keyDownChangeDirection(keyTime,0);
+      break;
+    }
+  }
+
   _changePosition(direct,speed=0,distant=0){
     speed = (speed==0)?distant:speed;
     switch(direct){

@@ -47,6 +47,25 @@ var Person = function () {
     value: function _draw() {//绘制画面   
     }
   }, {
+    key: '_onKey',
+    value: function _onKey(key, keyTime) {
+      //按键处理
+      switch (key) {
+        case 'left':
+          this._keyDownChangeDirection(keyTime, 3);
+          break;
+        case 'right':
+          this._keyDownChangeDirection(keyTime, 1);
+          break;
+        case 'up':
+          this._keyDownChangeDirection(keyTime, 2);
+          break;
+        case 'down':
+          this._keyDownChangeDirection(keyTime, 0);
+          break;
+      }
+    }
+  }, {
     key: '_changePosition',
     value: function _changePosition(direct) {
       var speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;

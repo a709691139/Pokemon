@@ -14,6 +14,7 @@ var Game = function () {
 			ongoing: false,
 			winOrlose: false
 		};
+		this.whichKeyBoard = 'menu'; //键盘事件传递层 people  menu
 		this.control = true; //游戏开始|暂停
 		this.box = {
 			element: '',
@@ -103,6 +104,8 @@ var Game = function () {
 				map._draw();
 				//玩家player绘制
 				player._draw();
+				//菜单绘制
+				menu._draw();
 				this.canvas.ctx.person.restore();
 				this.canvas.ctx.background.restore();
 
@@ -132,8 +135,9 @@ var LoadData = function () {
 			map: {
 				'm_001': 'images/mapElements01.dib'
 			},
-			border: {
-				'all': 'images/menuframes.png'
+			others: {
+				'border': 'images/menuframes.png',
+				'triangle': 'images/triangle.png'
 			}
 		};
 		this.imageObj = {
@@ -141,7 +145,7 @@ var LoadData = function () {
 				player: ''
 			},
 			map: {},
-			border: {}
+			others: {}
 		};
 	}
 

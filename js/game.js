@@ -4,6 +4,7 @@ class Game {
 			ongoing : false, 
 			winOrlose : false
 		};
+		this.whichKeyBoard = 'menu'; //键盘事件传递层 people  menu
 		this.control = true;  //游戏开始|暂停
 		this.box = {
 			element: '',
@@ -88,6 +89,8 @@ class Game {
 			map._draw();
 			//玩家player绘制
 			player._draw();
+			//菜单绘制
+			menu._draw();
 			this.canvas.ctx.person.restore();
 			this.canvas.ctx.background.restore();
 
@@ -113,8 +116,9 @@ class LoadData {
 			map:{
 				'm_001':'images/mapElements01.dib',
 			},
-			border:{
-				'all':'images/menuframes.png',
+			others:{
+				'border':'images/menuframes.png',
+				'triangle':'images/triangle.png',
 			},
 		};
 		this.imageObj = {
@@ -122,7 +126,7 @@ class LoadData {
 				player:''
 			},
 			map:{},
-			border:{},
+			others:{},
 		};
 	}
 	

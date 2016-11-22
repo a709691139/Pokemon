@@ -93,14 +93,25 @@ class Keyboard {
         });
 	}
 
+	_keyDown(key, keyTime){ //left,right..   0  1
+		switch(game.whichKeyBoard){
+			case 'people':
+			player._onKey(key, keyTime);
+			break;
+			case 'menu':
+			menu._onKey(key, keyTime);
+			break;
+		}
+	}
+
 	_loop_keyBoard(){
 		//判断按钮 执行相关方法
 		for(let i in this.onKeepKey){
 			let val = this.onKeepKey[i];
 			if( val.on ){
-				let key = new Date - val.time > 200 ? 1 : 0;
-				//console.log( i , key==0?'短按':'长按' , val.time, new Date - val.time );
-				val.func(key);//0短按 1长按
+				let keyTime = new Date - val.time > 200 ? 1 : 0;
+				//console.log( i , keyTime==0?'短按':'长按' , val.time, new Date - val.time );
+				this._keyDown(i, keyTime);//0短按 1长按
 			}
 		};
 	}
