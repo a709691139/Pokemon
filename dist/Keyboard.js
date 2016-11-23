@@ -8,47 +8,70 @@ var Keyboard = function () {
 	function Keyboard() {
 		_classCallCheck(this, Keyboard);
 
+		this.whichKeyBoard = 'people'; //键盘事件传递层 people  menu
+		this.keyboardMode = 0; //按键模式
 		this.onKeepKey = { //当前正在按的按键
 			left: {
 				keyCode: 65,
 				time: 0,
 				func: '',
 				on: false,
-				together: false
+				together: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
 			},
 			right: {
 				keyCode: 68,
 				time: 0,
 				func: '',
 				on: false,
-				together: false
+				together: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
 			},
 			up: {
 				keyCode: 87,
 				time: 0,
 				func: '',
 				on: false,
-				together: false
+				together: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
 			},
 			down: {
 				keyCode: 83,
 				time: 0,
 				func: '',
-				on: false
+				on: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
 			},
 			enter: {
 				keyCode: 74,
 				time: 0,
 				func: '',
 				on: false,
-				together: false
+				together: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
+			},
+			cancel: {
+				keyCode: 75,
+				time: 0,
+				func: '',
+				on: false,
+				together: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
 			},
 			start: {
 				keyCode: 13,
 				time: 0,
 				func: '',
 				on: false,
-				together: false
+				together: false,
+				shortPressed: false,
+				longPressDeltaTime: 0
 			}
 		};
 	}
@@ -56,14 +79,6 @@ var Keyboard = function () {
 	_createClass(Keyboard, [{
 		key: 'init',
 		value: function init() {
-			this.onKeepKey.left.func = player._move().left;
-			this.onKeepKey.right.func = player._move().right;
-			this.onKeepKey.up.func = player._move().up;
-			this.onKeepKey.down.func = player._move().down;
-			this.onKeepKey.enter.func = player._join;
-			this.onKeepKey.start.func = function (key) {
-				key == 0 && console.log('start');
-			};
 			var _that = this;
 			var Time = 0;
 			//keydown记录按下的键，keyup取消，
@@ -76,6 +91,7 @@ var Keyboard = function () {
 							val.on = true;
 							val.together = false;
 							val.time = new Date();
+							val.longPressDeltaTime = new Date();
 							//console.log('new Time');
 							break;
 						}
@@ -96,6 +112,7 @@ var Keyboard = function () {
 						//console.log('抬起',i);
 						val.on = false;
 						val.together = false;
+						val.shortPressed = false;
 						break;
 					}
 					if (val.together && !val.on) {
@@ -107,27 +124,58 @@ var Keyboard = function () {
 		}
 	}, {
 		key: '_keyDown',
-		value: function _keyDown(key, keyTime) {
-			//left,right..   0  1
-			switch (game.whichKeyBoard) {
+		value: function _keyDown(key, longPress) {
+			//left,right..  true false
+			switch (this.whichKeyBoard) {
 				case 'people':
-					player._onKey(key, keyTime);
+					player._onKey(key, longPress);
 					break;
 				case 'menu':
-					menu._onKey(key, keyTime);
+					menu._onKey(key, longPress);
 					break;
 			}
+		}
+	}, {
+		key: '_changeToKeyUp',
+		value: function _changeToKeyUp(key) {
+			//强制某按键抬起, 某些按键只需要按下触发，不需要长按
+			this.onKeepKey[key].on = false;
 		}
 	}, {
 		key: '_loop_keyBoard',
 		value: function _loop_keyBoard() {
 			//判断按钮 执行相关方法
-			for (var i in this.onKeepKey) {
-				var val = this.onKeepKey[i];
+
+			for (var key in this.onKeepKey) {
+				var val = this.onKeepKey[key];
 				if (val.on) {
-					var keyTime = new Date() - val.time > 200 ? 1 : 0;
-					//console.log( i , keyTime==0?'短按':'长按' , val.time, new Date - val.time );
-					this._keyDown(i, keyTime); //0短按 1长按
+					if (this.keyboardMode == 0) {
+						//模式一：　pressDeltaTime<200 ? 连续触发短按 : 连续触发长按
+						var longPress = new Date() - val.time > 200;
+						//console.log( i , longPress==0?'短按':'长按' , val.time, new Date - val.time );
+						this._keyDown(key, longPress);
+					} else {
+						//模式二：　短按只触发一次，　长按间隔100ms触发一次
+						var _longPress = false;
+						var pressDeltaTime = new Date() - val.time;
+						if (pressDeltaTime > 600) {
+							//按下后，longPress也是100ms触发一次
+							//console.log(val.longPressDeltaTime, new Date()-val.longPressDeltaTime );
+							if (new Date() - val.longPressDeltaTime > 100) {
+								_longPress = true;
+								this._keyDown(key, _longPress);
+								val.longPressDeltaTime = new Date();
+								//console.log('long');
+							}
+						} else {
+							//按下后，shortPress只触发一次
+							if (!val.shortPressed) {
+								val.shortPressed = true;
+								this._keyDown(key, _longPress);
+								//console.log('short')
+							}
+						}
+					}
 				}
 			};
 		}

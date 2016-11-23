@@ -9,6 +9,7 @@ var Menu = function () {
 	function Menu() {
 		_classCallCheck(this, Menu);
 
+		this.show = false;
 		this.visible = false;
 		this.selectedIndex = 1;
 		this.buttons = [{
@@ -48,8 +49,19 @@ var Menu = function () {
 	_createClass(Menu, [{
 		key: 'init',
 		value: function init() {
-			this.buttons[3].name = player.name;
+			var _this = this;
+
 			this.buttons[0].func = function () {};
+			this.buttons[1].func = function () {};
+			this.buttons[2].func = function () {};
+			this.buttons[3].func = function () {};
+			this.buttons[4].func = function () {};
+			this.buttons[5].func = function () {};
+			this.buttons[6].func = function () {
+				_this._toggleShow();
+			};
+			this.buttons[3].name = player.name;
+
 			for (var i = 0; i < 3; i++) {
 				for (var j = 0; j < 10; j++) {
 					this.images_border.array.push({ x: j, y: i });
@@ -59,10 +71,17 @@ var Menu = function () {
 			this.images_triangle.current = loadData.imageObj.others.triangle;
 		}
 	}, {
+		key: '_toggleShow',
+		value: function _toggleShow() {
+			this.show = !this.show;
+			keyboard.keyboardMode = this.show ? 1 : 0;
+			keyboard.whichKeyBoard = this.show ? 'menu' : 'people';
+		}
+	}, {
 		key: '_onKey',
-		value: function _onKey(key, keyTime) {
+		value: function _onKey(key, longPress) {
 			//按键处理
-			console.log('menu', key, keyTime);
+			console.log('menu', key, longPress);
 			switch (key) {
 				case 'up':
 					this.selectedIndex - 1 < 0 ? this.selectedIndex = this.buttons.length - 1 : --this.selectedIndex;
@@ -71,13 +90,31 @@ var Menu = function () {
 					this.selectedIndex + 1 > this.buttons.length - 1 ? this.selectedIndex = 0 : ++this.selectedIndex;
 					break;
 				case 'enter':
-					console.log('enter');
+					if (!longPress) {
+						this.buttons[this.selectedIndex].func();
+						keyboard._changeToKeyUp(key);
+					}
+					break;
+				case 'cancel':
+					if (!longPress) {
+						this._toggleShow();
+						keyboard._changeToKeyUp(key);
+					}
+					break;
+				case 'start':
+					if (!longPress) {
+						this._toggleShow();
+						keyboard._changeToKeyUp(key);
+					}
 					break;
 			}
 		}
 	}, {
 		key: '_draw',
 		value: function _draw() {
+			if (!this.show) {
+				return;
+			}
 			//绘画背景框、文字按钮、 选择浮标
 			var ctx = game.canvas.ctx.menu;
 			ctx.save();

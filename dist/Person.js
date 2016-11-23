@@ -39,7 +39,7 @@ var Person = function () {
     this.isMoveing = false; //移动一步
     this.moveTime = 0; //移动切换图片定时器
     this.movedStepDistant = 0; //移动一步已经走过的距离
-    this.keyDownLength = 1; //按键的0短按：1长按
+    this.longPress = true; //按键的短按：长按
   }
 
   _createClass(Person, [{
@@ -48,20 +48,24 @@ var Person = function () {
     }
   }, {
     key: '_onKey',
-    value: function _onKey(key, keyTime) {
+    value: function _onKey(key, longPress) {
       //按键处理
       switch (key) {
         case 'left':
-          this._keyDownChangeDirection(keyTime, 3);
+          this._keyDownChangeDirection(longPress, 3);
           break;
         case 'right':
-          this._keyDownChangeDirection(keyTime, 1);
+          this._keyDownChangeDirection(longPress, 1);
           break;
         case 'up':
-          this._keyDownChangeDirection(keyTime, 2);
+          this._keyDownChangeDirection(longPress, 2);
           break;
         case 'down':
-          this._keyDownChangeDirection(keyTime, 0);
+          this._keyDownChangeDirection(longPress, 0);
+          break;
+        case 'start':
+          menu._toggleShow();
+          keyboard._changeToKeyUp(key);
           break;
       }
     }
@@ -100,8 +104,8 @@ var Person = function () {
       var index = 3 * direct; //图片index
       var stepDistant = 0; //一步距离
       var speed = 0; //移动速度
-      //console.log(this.keyDownLength, this.images.currentIndex.lastDirect,direct );
-      if (this.keyDownLength == 0 && this.images.currentIndex.lastDirect != direct) {
+      //console.log(this.longPress, this.images.currentIndex.lastDirect,direct );
+      if (!this.longPress && this.images.currentIndex.lastDirect != direct) {
         // 1、短按&方向不同   180ms完成  动画 1 2 0
         onceTime = 200;
         speed = 0;
@@ -166,7 +170,7 @@ var Person = function () {
         this.movedStepDistant = 0;
         //上次方向改变
         this.images.currentIndex.lastDirect = direct;
-        this.keyDownLength = 1;
+        this.longPress = true;
         //console.log('走完||切换  结束');
         return false;
       }
@@ -200,15 +204,12 @@ var Person = function () {
     }
   }, {
     key: '_keyDownChangeDirection',
-    value: function _keyDownChangeDirection(key, direct) {
-      //key 0短按，1长按
+    value: function _keyDownChangeDirection(longPress, direct) {
+      //longPress 
       if (!this.isMoveing) {
         this.images.currentIndex.direct = direct;
         this.isMoveing = true;
-        if (key == 0) {
-          this.keyDownLength = 0;
-        }
-        //console.log( key==0?'短按':'长按' );
+        this.longPress = longPress;
       }
     }
   }, {
@@ -218,18 +219,17 @@ var Person = function () {
       //按着键盘200ms抬起就是 纯切换方向，继续就是向前一步
       var _that = this;
       return {
-        left: function left(key) {
-          //key 0短按，1长按
-          _that._keyDownChangeDirection(key, 3);
+        left: function left(longPress) {
+          _that._keyDownChangeDirection(longPress, 3);
         },
         right: function right(key) {
-          _that._keyDownChangeDirection(key, 1);
+          _that._keyDownChangeDirection(longPress, 1);
         },
         up: function up(key) {
-          _that._keyDownChangeDirection(key, 2);
+          _that._keyDownChangeDirection(longPress, 2);
         },
         down: function down(key) {
-          _that._keyDownChangeDirection(key, 0);
+          _that._keyDownChangeDirection(longPress, 0);
         }
       };
     }

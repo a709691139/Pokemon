@@ -14,7 +14,6 @@ var Game = function () {
 			ongoing: false,
 			winOrlose: false
 		};
-		this.whichKeyBoard = 'menu'; //键盘事件传递层 people  menu
 		this.control = true; //游戏开始|暂停
 		this.box = {
 			element: '',

@@ -1,6 +1,7 @@
 //游戏菜单， 按start呼出关闭菜单
 class Menu {
     constructor(){
+    	this.show = false;
     	this.visible = false;
     	this.selectedIndex = 1;
     	this.buttons = [
@@ -45,8 +46,17 @@ class Menu {
 	    };
     }
     init(){
-    	this.buttons[3].name = player.name;
     	this.buttons[0].func = ()=>{};
+    	this.buttons[1].func = ()=>{};
+    	this.buttons[2].func = ()=>{};
+    	this.buttons[3].func = ()=>{};
+    	this.buttons[4].func = ()=>{};
+    	this.buttons[5].func = ()=>{};
+    	this.buttons[6].func = ()=>{
+    		this._toggleShow();
+    	};
+    	this.buttons[3].name = player.name;
+
     	for(let i=0;i<3;i++){
     		for(let j=0;j<10;j++){
     			this.images_border.array.push({x:j,y:i});
@@ -56,8 +66,14 @@ class Menu {
     	this.images_triangle.current = loadData.imageObj.others.triangle;
     }
 
-    _onKey(key, keyTime){ //按键处理
-    	console.log('menu',key, keyTime);
+    _toggleShow(){
+    	this.show = !this.show;
+    	keyboard.keyboardMode = this.show ? 1 : 0;  
+    	keyboard.whichKeyBoard = this.show ? 'menu' : 'people';
+    }
+
+    _onKey(key, longPress){ //按键处理
+    	console.log('menu',key, longPress);
 	    switch(key){
 	      case 'up':
 	      (this.selectedIndex-1<0) ? this.selectedIndex=this.buttons.length-1 : --this.selectedIndex;
@@ -66,12 +82,28 @@ class Menu {
 	      (this.selectedIndex+1>this.buttons.length-1) ? this.selectedIndex=0 : ++this.selectedIndex;
 	      break;
 	      case 'enter':
-	      console.log('enter');
+	      if(!longPress){
+	      	this.buttons[this.selectedIndex].func();
+	      	keyboard._changeToKeyUp(key);
+	      }
+	      break;
+	      case 'cancel':
+	      if(!longPress){
+	      	this._toggleShow();
+	      	keyboard._changeToKeyUp(key);
+	      }
+	      break;
+	      case 'start':
+	      if(!longPress){
+	      	this._toggleShow();
+	      	keyboard._changeToKeyUp(key);
+	      }
 	      break;
 	    }
 	  }
 
     _draw(){ 
+    	if(!this.show){return;}
     	//绘画背景框、文字按钮、 选择浮标
     	let ctx = game.canvas.ctx.menu;
     	ctx.save();
