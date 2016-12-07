@@ -83,3 +83,27 @@ class Map {
   }
 
 }
+
+class MapBlock {
+  constructor() {
+  	//地图动态背景，如随风而动的花朵，同步全部的花朵，只是位置不同
+    this.position = { //基本位置 
+      x:0,
+      y:0,
+      x_index:1,
+      y_index:2,
+    };
+    this.aspect = { 
+      width:0,
+      height:0,
+    };
+    this.images = { 
+      url: '',
+      current: '',  //当前图片obj
+    };
+  }
+
+  _draw(){ 
+  }
+}
+

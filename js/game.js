@@ -115,6 +115,9 @@ class LoadData {
 			map:{
 				'm_001':'images/mapElements01.dib',
 			},
+			mapBlock:{
+				'b_001':'images/mapBlockAnimate.png',
+			},
 			others:{
 				'border':'images/menuframes.png',
 				'triangle':'images/triangle.png',
@@ -125,6 +128,7 @@ class LoadData {
 				player:''
 			},
 			map:{},
+			mapBlock:{},
 			others:{},
 		};
 	}
